@@ -208,6 +208,37 @@ class db_oracle_testcase extends BaseTestCase {
 		$this->assertEquals($expected, $query);
 	}
 
+	/**
+	 * @test
+	 * @see http://bugs.typo3.org/view.php?id=12231
+	 */
+	public function cachingFrameworkQueryIsProperlyQuoted() {
+		$currentTime = time();
+		$query = $this->cleanSql($GLOBALS['TYPO3_DB']->SELECTquery(
+			'content',
+			'cache_hash',
+			'identifier = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr('abbbabaf2d4b3f9a63e8dde781f1c106', 'cache_hash') .
+				' AND (crdate + lifetime >= ' . $currentTime . ' OR lifetime = 0)'
+		));
+		$expected = 'SELECT "content" FROM "cache_hash" WHERE "identifier" = \'abbbabaf2d4b3f9a63e8dde781f1c106\' AND ("crdate"+"lifetime" >= ' . $currentTime . ' OR "lifetime" = 0)';
+		$this->assertEquals($expected, $query);
+	}
+
+	/**
+	 * @test
+	 * @see http://bugs.typo3.org/view.php?id=12231
+	 */
+	public function calculatedFieldsAreProperlyQuoted() {
+		$currentTime = time();
+		$query = $this->cleanSql($GLOBALS['TYPO3_DB']->SELECTquery(
+			'identifier',
+			'cachingframework_cache_pages',
+			'crdate + lifetime < ' . $currentTime . ' AND lifetime > 0'
+		));
+		$expected = 'SELECT "identifier" FROM "cachingframework_cache_pages" WHERE "crdate"+"lifetime" < ' . $currentTime . ' AND "lifetime" > 0';
+		$this->assertEquals($expected, $query);
+	}
+
 	///////////////////////////////////////
 	// Tests concerning remapping
 	///////////////////////////////////////
@@ -401,6 +432,99 @@ class db_oracle_testcase extends BaseTestCase {
 			)
 		');
 		$this->assertEquals($expected, $this->cleanSql($sqlCommands[0]));
-	}	
+	}
+
+	///////////////////////////////////////
+	// Tests concerning subqueries
+	///////////////////////////////////////
+
+	/**
+	 * @test
+	 * @see http://bugs.typo3.org/view.php?id=12758
+	 */
+	public function inWhereClauseWithSubqueryIsProperlyQuoted() {
+		$query = $this->cleanSql($GLOBALS['TYPO3_DB']->SELECTquery(
+			'*',
+			'tx_crawler_queue',
+			'process_id IN (SELECT process_id FROM tx_crawler_process WHERE active=0 AND deleted=0)'
+		));
+		$expected = 'SELECT * FROM "tx_crawler_queue" WHERE "process_id" IN (SELECT "process_id" FROM "tx_crawler_process" WHERE "active" = 0 AND "deleted" = 0)';
+		$this->assertEquals($expected, $query);
+	}
+
+	/**
+	 * @test
+	 * @see http://bugs.typo3.org/view.php?id=12758
+	 */
+	public function subqueryIsRemappedForInWhereClause() {
+		$selectFields = '*';
+		$fromTables   = 'tx_crawler_queue';
+		$whereClause  = 'process_id IN (SELECT process_id FROM tx_crawler_process WHERE active=0 AND deleted=0)';
+		$groupBy      = '';
+		$orderBy      = '';
+
+		$GLOBALS['TYPO3_DB']->_callRef('map_remapSELECTQueryParts', $selectFields, $fromTables, $whereClause, $groupBy, $orderBy);
+		$query = $this->cleanSql($GLOBALS['TYPO3_DB']->SELECTquery($selectFields, $fromTables, $whereClause, $groupBy, $orderBy));
+
+		$expected = 'SELECT * FROM "tx_crawler_queue" WHERE "process_id" IN (SELECT "ps_id" FROM "tx_crawler_ps" WHERE "is_active" = 0 AND "deleted" = 0)';
+		$this->assertEquals($expected, $query);
+	}
+
+	/**
+	 * @test
+	 * @see http://bugs.typo3.org/view.php?id=12800
+	 */
+	public function cachingFrameworkQueryIsSupported() {
+		$currentTime = time();
+		$query = $this->cleanSql($GLOBALS['TYPO3_DB']->DELETEquery(
+			'cachingframework_cache_hash_tags',
+			'identifier IN (' .
+				$GLOBALS['TYPO3_DB']->SELECTsubquery(
+					'identifier',
+					'cachingframework_cache_pages',
+					'crdate + lifetime < ' . $currentTime . ' AND lifetime > 0'
+				) .
+			')'
+		));
+		$expected = 'DELETE FROM "cachingframework_cache_hash_tags" WHERE "identifier" IN (';
+		$expected .= 'SELECT "identifier" FROM "cachingframework_cache_pages" WHERE "crdate"+"lifetime" < ' . $currentTime . ' AND "lifetime" > 0';
+		$expected .= ')';
+		$this->assertEquals($expected, $query);
+	}
+
+	/**
+	 * @test
+	 * @see http://bugs.typo3.org/view.php?id=12800
+	 */
+	public function cachingFrameworkQueryIsRemapped() {
+		$currentTime = time();
+		$table = 'cachingframework_cache_hash_tags';
+		$where = 'identifier IN (' .
+				$GLOBALS['TYPO3_DB']->SELECTsubquery(
+					'identifier',
+					'cachingframework_cache_pages',
+					'crdate + lifetime < ' . $currentTime . ' AND lifetime > 0'
+				) .
+			')';
+
+			// Perform remapping (as in method exec_DELETEquery)
+		if ($tableArray = $GLOBALS['TYPO3_DB']->_call('map_needMapping', $table)) {
+				// Where clause:
+			$whereParts = $GLOBALS['TYPO3_DB']->SQLparser->parseWhereClause($where);
+			$GLOBALS['TYPO3_DB']->_callRef('map_sqlParts', $whereParts, $tableArray[0]['table']);
+			$where = $GLOBALS['TYPO3_DB']->SQLparser->compileWhereClause($whereParts, FALSE);
+
+				// Table name:
+			if ($GLOBALS['TYPO3_DB']->mapping[$table]['mapTableName']) {
+				$table = $GLOBALS['TYPO3_DB']->mapping[$table]['mapTableName'];
+			}
+		}
+		
+		$query = $this->cleanSql($GLOBALS['TYPO3_DB']->DELETEquery($table, $where));
+		$expected = 'DELETE FROM "cf_cache_hash_tags" WHERE "identifier" IN (';
+		$expected .= 'SELECT "identifier" FROM "cf_cache_pages" WHERE "crdate"+"lifetime" < ' . $currentTime . ' AND "lifetime" > 0';
+		$expected .= ')';
+		$this->assertEquals($expected, $query);
+	}
 }
 ?>
