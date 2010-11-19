@@ -61,6 +61,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 			case 'native':
 				$output = parent::compileFieldList($selectFields, $compileComments);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$output = '';
 					// Traverse the selectFields if any:
@@ -117,6 +120,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 			case 'native':
 				$output = parent::compileCaseStatement($components);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$statement = 'CASE';
 				if (isset($components['case_field'])) {
@@ -171,6 +177,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 			case 'native':
 				$query = parent::compileINSERT($components);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$values = array();
 
@@ -209,6 +218,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 			case 'native':
 				$query = 'DROP TABLE' . ($components['ifExists'] ? ' IF EXISTS' : '') . ' ' . $components['TABLE'];
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$handlerKey = $GLOBALS['TYPO3_DB']->handler_getFromTableList($components['TABLE']);
 				$tableName = $GLOBALS['TYPO3_DB']->quoteName($components['TABLE'], $handlerKey, TRUE);
@@ -231,6 +243,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 		switch ((string)$GLOBALS['TYPO3_DB']->handlerCfg[$GLOBALS['TYPO3_DB']->handler_getFromTableList($components['TABLE'])]['type']) {
 			case 'native':
 				$query[] = parent::compileCREATETABLE($components);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 					// Create fields and keys:
@@ -283,6 +298,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 			case 'native':
 				$query[] = parent::compileALTERTABLE($components);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$tableName = $GLOBALS['TYPO3_DB']->quoteName($components['TABLE'], NULL, TRUE);
 				$fieldName = $GLOBALS['TYPO3_DB']->quoteName($components['FIELD'], NULL, TRUE);
@@ -322,6 +340,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 		switch ((string)$GLOBALS['TYPO3_DB']->handlerCfg[$GLOBALS['TYPO3_DB']->lastHandlerKey]['type']) {
 			case 'native':
 				$cfg = parent::compileFieldCfg($fieldCfg);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 					// Set type:
@@ -429,6 +450,9 @@ class ux_t3lib_sqlparser extends t3lib_sqlparser {
 		switch ((string)$GLOBALS['TYPO3_DB']->handlerCfg[$GLOBALS['TYPO3_DB']->lastHandlerKey]['type']) {
 			case 'native':
 				$output = parent::compileWhereClause($clauseArray);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 					// Prepare buffer variable:

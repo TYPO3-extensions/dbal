@@ -462,6 +462,9 @@ class ux_t3lib_DB extends t3lib_DB {
 					}
 				}
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 					// auto generate ID for auto_increment fields if not present (static import needs this!)
 					// should we check the table name here (static_*)?
@@ -629,7 +632,10 @@ class ux_t3lib_DB extends t3lib_DB {
 						mysql_query('UPDATE '.$this->quoteFromTables($table).' SET '.$this->quoteFromTables($field).'='.$this->fullQuoteStr($content,$table).' WHERE '.$this->quoteWhereClause($where), $this->handlerInstance[$this->lastHandlerKey]['link']);
 					}
 				}
-			break;
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$this->lastQuery = $this->UPDATEquery($table,$where,$fields_values,$no_quote_fields);
 				if (is_string($this->lastQuery)) {
@@ -711,6 +717,9 @@ class ux_t3lib_DB extends t3lib_DB {
 				$this->lastQuery = $this->DELETEquery($table,$where);
 				$sqlResult = mysql_query($this->lastQuery, $this->handlerInstance[$this->lastHandlerKey]['link']);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$this->lastQuery = $this->DELETEquery($table,$where);
 				$sqlResult = $this->handlerInstance[$this->lastHandlerKey]->_query($this->lastQuery,FALSE);
@@ -776,6 +785,9 @@ class ux_t3lib_DB extends t3lib_DB {
 				$this->lastQuery = $this->SELECTquery($select_fields, $from_table, $where_clause, $groupBy, $orderBy, $limit);
 				$sqlResult = mysql_query($this->lastQuery, $this->handlerInstance[$this->lastHandlerKey]['link']);
 				$this->resourceIdToTableNameMap[(string)$sqlResult] = $ORIG_tableName;
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				if ($limit != '') {
@@ -868,6 +880,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$this->lastQuery = $this->TRUNCATEquery($table);
 				$sqlResult = mysql_query($this->lastQuery, $this->handlerInstance[$this->lastHandlerKey]['link']);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$this->lastQuery = $this->TRUNCATEquery($table);
@@ -1493,6 +1508,9 @@ class ux_t3lib_DB extends t3lib_DB {
 				$query = parent::SELECTquery($select_fields, $from_table, $where_clause, $groupBy, $orderBy, $limit);
 				$precompiledParts['queryParts'] = explode($parameterWrap, $query);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$query = parent::SELECTquery($select_fields, $from_table, $where_clause, $groupBy, $orderBy);
 				$precompiledParts['queryParts'] = explode($parameterWrap, $query);
@@ -1532,6 +1550,9 @@ class ux_t3lib_DB extends t3lib_DB {
 				$this->lastQuery = $query;
 				$sqlResult = mysql_query($this->lastQuery, $this->handlerInstance[$this->lastHandlerKey]['link']);
 				$this->resourceIdToTableNameMap[(string)$sqlResult] = $precompiledParts['ORIG_tableName'];
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$limit = $precompiledParts['LIMIT'];
@@ -1943,6 +1964,9 @@ class ux_t3lib_DB extends t3lib_DB {
 					$str = str_replace('\'', '\\\'', $str);
 				}
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$str = substr($this->handlerInstance[$this->lastHandlerKey]->qstr($str), 1, -1);
 				break;
@@ -1989,6 +2013,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ((string)$this->handlerCfg[$this->lastHandlerKey]['type']) {
 			case 'native':
 				$str = $type;
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				if (in_array($table, $this->cache_fieldType)) {
@@ -2109,6 +2136,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$output = mysql_error($this->handlerInstance[$this->lastHandlerKey]['link']);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$output = $this->handlerInstance[$this->lastHandlerKey]->ErrorMsg();
 				break;
@@ -2128,6 +2158,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ($this->handlerCfg[$this->lastHandlerKey]['type']) {
 			case 'native':
 				$output = mysql_errno($this->handlerInstance[$this->lastHandlerKey]['link']);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$output = $this->handlerInstance[$this->lastHandlerKey]->ErrorNo();
@@ -2153,6 +2186,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$output = mysql_num_rows($res);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$output = method_exists($res, 'RecordCount') ? $res->RecordCount() : 0;
 				break;
@@ -2177,6 +2213,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$output = mysql_fetch_assoc($res);
 				$tableList = $this->resourceIdToTableNameMap[(string)$res];	// Reading list of tables from SELECT query:
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 					// Check if method exists for the current $res object.
@@ -2238,6 +2277,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$output = mysql_fetch_row($res);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 					// Check if method exists for the current $res object.
 					// If a table exists in TCA but not in the db, a error
@@ -2286,6 +2328,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$output = mysql_free_result($res);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				if (method_exists($res, 'Close')) {
 					$res->Close();
@@ -2312,6 +2357,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			case 'native':
 				$output = mysql_insert_id($this->handlerInstance[$this->lastHandlerKey]['link']);
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$output = $this->handlerInstance[$this->lastHandlerKey]->last_insert_id;
 				break;
@@ -2331,6 +2379,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ($this->handlerCfg[$this->lastHandlerKey]['type']) {
 			case 'native':
 				$output = mysql_affected_rows();
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$output = $this->handlerInstance[$this->lastHandlerKey]->Affected_Rows();
@@ -2354,6 +2405,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ($handlerType) {
 			case 'native':
 				$output = mysql_data_seek($res,$seek);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$output = $res->Move($seek);
@@ -2420,6 +2474,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ($handlerType) {
 			case 'native':
 				$output = mysql_field_type($res,$pointer);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				if (is_string($pointer)){
@@ -2488,6 +2545,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ($this->handlerCfg['_DEFAULT']['type']) {
 			case 'native':
 				$sqlResult = mysql_query($query, $this->handlerInstance['_DEFAULT']['link']);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$sqlResult = $this->handlerInstance['_DEFAULT']->Execute($query);
@@ -2578,6 +2638,9 @@ class ux_t3lib_DB extends t3lib_DB {
 					}
 				}
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 					// check needed for install tool - otherwise it will just die because the call to
 					// MetaDatabases is done on a stdClass instance
@@ -2620,6 +2683,9 @@ class ux_t3lib_DB extends t3lib_DB {
 						$whichTables[$theTable['Name']] = $theTable;
 					}
 				}
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 					// check needed for install tool - otherwise it will just die because the call to
@@ -2696,6 +2762,9 @@ class ux_t3lib_DB extends t3lib_DB {
 					$output[$fieldRow['Field']] = $fieldRow;
 				}
 				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 			case 'adodb':
 				$fieldRows = $this->handlerInstance[$this->lastHandlerKey]->MetaColumns($tableName, FALSE);
 				if (is_array($fieldRows)) {
@@ -2764,6 +2833,9 @@ class ux_t3lib_DB extends t3lib_DB {
 				while($keyRow = mysql_fetch_assoc($keyRes)) {
 					$output[] = $keyRow;
 				}
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				$keyRows = $this->handlerInstance[$this->lastHandlerKey]->MetaIndexes($tableName);
@@ -2899,6 +2971,9 @@ class ux_t3lib_DB extends t3lib_DB {
 					}
 					return mysql_query($compiledQuery[0], $this->link);
 					break;
+				case 'pdo':
+				throw new Exception('Not yet implemented');
+				break;
 				case 'adodb':
 						// Compiling query:
 					$compiledQuery =  $this->SQLparser->compileSQL($this->lastParsedAndMappedQueryArray);
@@ -3034,6 +3109,9 @@ class ux_t3lib_DB extends t3lib_DB {
 						t3lib_div::sysLog('Could not connect to MySQL server '.$cfgArray['config']['host'].' with user '.$cfgArray['config']['username'].'.','Core',4);
 					}
 					break;
+				case 'pdo':
+					throw new Exception('Not yet implemented');
+					break;
 				case 'adodb':
 					$output = TRUE;
 					require_once(t3lib_extMgm::extPath('adodb').'adodb/adodb.inc.php');
@@ -3113,6 +3191,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		switch ((string)$this->handlerCfg[$this->lastHandlerKey]['type']) {
 			case 'native':
 				$result = is_resource($this->link);
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 			case 'userdefined':
@@ -3856,6 +3937,9 @@ class ux_t3lib_DB extends t3lib_DB {
 				while($row = $this->sql_fetch_assoc($res)) {
 					$output[] = $row;
 				}
+				break;
+			case 'pdo':
+				throw new Exception('Not yet implemented');
 				break;
 			case 'adodb':
 				switch ($this->handlerCfg['_DEFAULT']['config']['driver']) {
