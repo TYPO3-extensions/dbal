@@ -3110,7 +3110,25 @@ class ux_t3lib_DB extends t3lib_DB {
 					}
 					break;
 				case 'pdo':
-					throw new Exception('Not yet implemented');
+					$initCommands = str_replace("' . LF . '", LF, $GLOBALS['TYPO3_CONF_VARS']['SYS']['setDBinit']);
+					try {
+						$link = t3lib_div::makeInstance('tx_driver_pdo',
+							$cfgArray['config']['driver'],
+							$cfgArray['config']['host'] . (isset($cfgArray['config']['port']) ? ':' . $cfgArray['config']['port'] : ''),
+							$cfgArray['config']['database'],
+							$cfgArray['config']['username'],
+							$cfgArray['config']['password'],
+							$GLOBALS['TYPO3_CONF_VARS']['SYS']['no_pconnect'] ? FALSE : TRUE,
+							$initCommands
+						);
+
+							// Set handler instance:
+						$this->handlerInstance[$handlerKey] = array('handlerType' => 'pdo', 'link' => $link);
+					} catch (PDOException $e) {
+						t3lib_div::sysLog('Could not connect to DB server using PDO: ' . $e->getMessage() . '.', 'Core', 4);
+						error_log('DBAL error: Connection failed. Maybe PHP doesn\'t support the database?');
+						$output = FALSE;
+					}
 					break;
 				case 'adodb':
 					$output = TRUE;
