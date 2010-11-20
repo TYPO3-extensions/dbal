@@ -3080,9 +3080,9 @@ class ux_t3lib_DB extends t3lib_DB {
 			switch ($handlerType) {
 				case 'native':
 					if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['no_pconnect']) {
-						$link = mysql_connect($cfgArray['config']['host'].(isset($cfgArray['config']['port']) ? ':'.$cfgArray['config']['port'] : ''), $cfgArray['config']['username'], $cfgArray['config']['password'], TRUE);
+						$link = mysql_connect($cfgArray['config']['host'] . (isset($cfgArray['config']['port']) ? ':' . $cfgArray['config']['port'] : ''), $cfgArray['config']['username'], $cfgArray['config']['password'], TRUE);
 					} else {
-						$link = mysql_pconnect($cfgArray['config']['host'].(isset($cfgArray['config']['port']) ? ':'.$cfgArray['config']['port'] : ''), $cfgArray['config']['username'], $cfgArray['config']['password']);
+						$link = mysql_pconnect($cfgArray['config']['host'] . (isset($cfgArray['config']['port']) ? ':' . $cfgArray['config']['port'] : ''), $cfgArray['config']['username'], $cfgArray['config']['password']);
 					}
 
 						// Set handler instance:
@@ -3112,7 +3112,7 @@ class ux_t3lib_DB extends t3lib_DB {
 				case 'pdo':
 					$initCommands = str_replace("' . LF . '", LF, $GLOBALS['TYPO3_CONF_VARS']['SYS']['setDBinit']);
 					try {
-						$link = t3lib_div::makeInstance('tx_driver_pdo',
+						$link = t3lib_div::makeInstance('tx_dbal_driver_pdo',
 							$cfgArray['config']['driver'],
 							$cfgArray['config']['host'] . (isset($cfgArray['config']['port']) ? ':' . $cfgArray['config']['port'] : ''),
 							$cfgArray['config']['database'],
@@ -3124,10 +3124,11 @@ class ux_t3lib_DB extends t3lib_DB {
 
 							// Set handler instance:
 						$this->handlerInstance[$handlerKey] = array('handlerType' => 'pdo', 'link' => $link);
+
+						$output = TRUE;
 					} catch (PDOException $e) {
 						t3lib_div::sysLog('Could not connect to DB server using PDO: ' . $e->getMessage() . '.', 'Core', 4);
 						error_log('DBAL error: Connection failed. Maybe PHP doesn\'t support the database?');
-						$output = FALSE;
 					}
 					break;
 				case 'adodb':
@@ -3211,7 +3212,7 @@ class ux_t3lib_DB extends t3lib_DB {
 				$result = is_resource($this->link);
 				break;
 			case 'pdo':
-				throw new Exception('Not yet implemented');
+				$result = is_object($this->handlerInstance[$this->lastHandlerKey]);
 				break;
 			case 'adodb':
 			case 'userdefined':

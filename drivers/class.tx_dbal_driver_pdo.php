@@ -43,8 +43,8 @@ class tx_dbal_driver_pdo {
 	/**
 	 * Default constructor.
 	 *
-	 * @param string $driver
-	 * @param string $server use <server>:<port> if you need to specify a specific port to connect to your server
+	 * @param string $driver PDO driver to use
+	 * @param string $server use <server>:<port> if you need to specify a specific port to connect to your server. Use socket:<path> to connect though a Unix socket.
 	 * @param string $database
 	 * @param string $username
 	 * @param string $password
@@ -54,10 +54,17 @@ class tx_dbal_driver_pdo {
 	 */
 	public function __construct($driver, $server, $database, $username = '', $password = '', $persistent = FALSE, $initCommands = '') {
 		$dsn = $driver . ':';
+		$socket = '';
 		$port = '';
-		if (($colon = strpos(':', $server)) !== FALSE) {
-			$port = substr($server, $colon + 1);
+		if (($colon = strpos($server, ':')) !== FALSE) {
+			$socketOrPort = substr($server, $colon + 1);
 			$server = substr($server, 0, $colon);
+			if ($server === 'socket') {
+				$socket = $socketOrPort;
+				$server = '';
+			} else {
+				$port = $socketOrPort;
+			}
 		}
 
 		switch ($driver) {
@@ -65,12 +72,16 @@ class tx_dbal_driver_pdo {
 				$dsn .= 'Server=' . $server . ';Database=' . $database;
 				break;
 			default:
-				$dsn .= 'host=' . $server . ';dbname=' . $database;
+				if ($server) {
+					$dsn .= 'host=' . $server;
+					if ($port) {
+						$dsn .= ';port=' . $port;
+					}
+				} else {
+					$dsn .= 'unix_socket=' . $socket;
+				}
+				$dsn .= ';dbname=' . $database;
 				break;
-		}
-
-		if ($port) {
-			$dsn .= ';port=' . $port;
 		}
 
 		$options = array();
@@ -86,6 +97,11 @@ class tx_dbal_driver_pdo {
 		} else {
 			$this->handle = new PDO($dsn, $username, $password);
 		}
+
+			// In addition to setting the error code, PDO will throw a PDOException and set its properties to reflect
+			// the error code and error information.
+			// Remember: transactions are automatically rolled back if the exception causes the script to terminate.
+		$this->handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
 	/**
