@@ -6,9 +6,12 @@
 $extensionPath = t3lib_extMgm::extPath('dbal');
 return array(
 	'tx_dbal_sql_global' => $extensionPath . 'lib/sql/class.tx_dbal_sql_global.php',
+	'tx_dbal_sql_parser' => $extensionPath . 'lib/sql/class.tx_dbal_sql_parser.php',
 	'tx_dbal_sql_position' => $extensionPath . 'lib/sql/class.tx_dbal_sql_position.php',
 	'tx_dbal_sql_scanner' => $extensionPath . 'lib/sql/class.tx_dbal_sql_scanner.php',
 	'tx_dbal_sql_tokens' => $extensionPath . 'lib/sql/interface.tx_dbal_sql_tokens.php',
+	'tx_dbal_sql_tree' => $extensionPath . 'lib/sql/class.tx_dbal_sql_tree.php',
+	'tx_dbal_sql_error_tokenexpected' => $extensionPath . 'lib/sql/error/class.tx_dbal_sql_error_tokenexpected.php',
 	'tx_dbal_system_io_reader' => $extensionPath . 'lib/system/io/class.tx_dbal_system_io_reader.php',
 	'tx_dbal_system_io_stringreader' => $extensionPath . 'lib/system/io/class.tx_dbal_system_io_stringreader.php',
 

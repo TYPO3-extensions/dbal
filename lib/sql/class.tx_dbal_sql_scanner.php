@@ -28,6 +28,7 @@
 
 /**
  * Lexical analyzer.
+ *
  * The whole parser is based on compilation course (LAMP) I attended at
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
  * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
@@ -36,7 +37,7 @@
  *
  * @author Xavier Perseguers <typo3@perseguers.ch>
  * @package TYPO3
- * @subpackage dbal
+ * @subpackage dbal\sql
  */
 class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 
@@ -69,19 +70,19 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 * Current character
 	 * @var string
 	 */
-	protected $ch;
+	private $ch;
 
 	/**
 	 * Line for current character
 	 * @var integer
 	 */
-	protected $line = 1;
+	private $line = 1;
 
 	/**
 	 * Column for current character
 	 * @var integer
 	 */
-	protected $column = 0;
+	private $column = 0;
 
 	/**
 	 * @var tx_dbal_sql_Global
@@ -92,7 +93,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 * Input stream
 	 * @var tx_dbal_System_Io_Reader
 	 */
-	protected $in;
+	private $in;
 
 	/**
 	 * Reserved for method {@see nextCh()}
@@ -142,7 +143,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 *
 	 * @return integer
 	 */
-	public function readToken() {
+	private function readToken() {
 		$this->chars = '';
 		$this->buffer = '';
 		switch ($this->ch) {
@@ -1061,7 +1062,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 * @param integer $token
 	 * @return integer
 	 */
-	protected function nextCh($token = 0) {
+	private function nextCh($token = 0) {
 		switch ($this->ch) {
 			case self::EOF:
 				return;

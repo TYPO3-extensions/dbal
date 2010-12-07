@@ -27,8 +27,7 @@
 
 
 /**
- * This class contains methods to encode the position (line / column)
- * using an integer.
+ * Abstract class for the tree nodes of the abstract grammar.
  *
  * The whole parser is based on compilation course (LAMP) I attended at
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
@@ -40,61 +39,7 @@
  * @package TYPO3
  * @subpackage dbal\sql
  */
-class tx_dbal_sql_Position {
-
-	/**
-	 * Number of bits reserved for encoding the column.
-	 */
-	const columnBits = 12;
-
-	/**
-	 * Bitmask to encode and decode the column.
-	 */
-	const columnMask = 4095; // (1 << self::columnBits) - 1
-
-	/**
-	 * Unknown position.
-	 */
-	const UNDEFINED = 0;
-
-	/**
-	 * First character of any file/string.
-	 */
-	const FIRST = 4097; // (1 << self::columnBits) | 1
-
-	/**
-	 * Encodes the line/column in a single integer.
-	 *
-	 * @param integer $line
-	 * @param integer $column
-	 * @return integer The encoded position
-	 * @static
-	 */
-	public static function encode($line, $column) {
-		return ($line << self::columnBits) | ($column & self::columnMask);
-	}
-
-	/**
-	 * Extracts the line encoded in a position.
-	 *
-	 * @param integer $position
-	 * @return integer
-	 * @static
-	 */
-	public static function line($position) {
-		return $position >> self::columnBits;
-	}
-
-	/**
-	 * Extracts the column encoded in a position.
-	 *
-	 * @param integer $position
-	 * @return integer
-	 * @static
-	 */
-	public static function column($position) {
-		return $position & self::columnMask;
-	}
+abstract class tx_dbal_sql_Tree {
 
 }
 

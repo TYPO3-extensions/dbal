@@ -27,29 +27,23 @@
 
 
 /**
- * This class provides methods to show error and debug messages.
- *
- * The whole parser is based on compilation course (LAMP) I attended at
- * Swiss Federal Institute of Technology. Nice to use that again ;-)
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
+ * An exception for an expected token that was not found.
  *
  * $Id$
  *
  * @author Xavier Perseguers <typo3@perseguers.ch>
  * @package TYPO3
- * @subpackage dbal\sql
+ * @subpackage dbal\sql\error
  */
-class tx_dbal_sql_Global implements t3lib_Singleton {
+class tx_dbal_sql_error_TokenExpected extends t3lib_exception {
 
-	public function error($position, $message) {
-		$str = '';
-		$str .= tx_dbal_sql_Position::line($position);
-		$str .= ':';
-		$str .= tx_dbal_sql_Position::column($position);
-		$str .= ': ';
-		$str .= $message;
-
-		t3lib_div::debug($str, 'SQL Error');
+	/**
+	 * Default constructor.
+	 *
+	 * @param string $class
+	 */
+	public function __construct($class) {
+		parent::__construct('Expected token from class ' . $class);
 	}
 
 }
