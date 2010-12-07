@@ -225,18 +225,22 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 				$this->nextCh();
 				$this->chars = $this->buffer;
 				return self::T_STRING;
-			case '\'':
-				$this->nextCh();
+			case "'":
 				$this->buffer .= $this->ch;
 				$this->nextCh();
-				if ($this->ch !== '\'') {
-					$this->global->error($this->start, 'Invalid character');
-					return self::BAD;
-				} else {
-					$this->nextCh();
-					$this->chars = $this->buffer;
-					return self::T_STRING;	// TODO: check that!
+				while ($this->ch !== "'") {
+					if ($this->ch !== "\n") {
+						$this->buffer .= $this->ch;
+						$this->nextCh();
+					} else {
+						$this->global->error($this->start, 'String not ended');
+						return self::BAD;
+					}
 				}
+				$this->buffer .= $this->ch;
+				$this->nextCh();
+				$this->chars = $this->buffer;
+				return self::T_STRING;
 		}
 
 		if ($this->ch >= '0' && $this->ch <= '9') {
@@ -257,7 +261,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			while (($this->ch >= 'a' && $this->ch <= 'z')
 					|| ($this->ch >= 'A' && $this->ch <= 'Z')
 					|| ($this->ch >= '0' && $this->ch <= '9')
-					|| $this->ch === '_') {
+					|| $this->ch === '_' || $this->ch === '.') {
 				$this->buffer .= $this->ch;
 				$this->nextCh();
 			}
@@ -298,6 +302,13 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 */
 	protected function getReservedWord($str) {
 		switch (strtoupper($str)) {
+			// Functions
+			case 'CONCAT':
+				return self::T_CONCAT;
+			case 'FIND_IN_SET':
+				return self::T_FINDINSET;
+
+			// Reserved words
 			case 'ACCESSIBLE':
 				return self::T_ACCESSIBLE;
 			case 'ADD':
@@ -806,6 +817,10 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			case self::T_LOGICOR                       : return '||';
 			case self::T_BITAND                        : return '&';
 			case self::T_BITOR                         : return '|';
+
+			// Functions
+			case self::T_CONCAT                        : return 'CONCAT';
+			case self::T_FINDINSET                     : return 'FIND_IN_SET';
 
 			// Reserved words
 			case self::T_ACCESSIBLE                    : return 'ACCESSIBLE';
