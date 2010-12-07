@@ -1,3 +1,33 @@
+2010-12-06  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed bug #16679: Cannot login to backend at the end of 1-2-3 wizard when using Oracle
+
+2010-12-05  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed bug #16677: PHP notices from XCLASS inclusions
+	* Fixed bug #16678: DBAL is active with MySQL at the end of 1-2-3 wizard
+
+2010-12-02  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed bug #16639: Install Tool is unusable since DBAL merge
+
+2010-12-01  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Set version to 1.2.0beta2
+
+2010-12-01  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed use of undefined variable $where in method exec_INSERTquery() with MySQL handler
+	* Fixed use of undefined variable $mapping in method map_subquery()
+	* Follow-up for bug #16392: Native tables could not be retrieved anymore
+	* Code cleanup
+	* Fixed bug #16492: groupBy and orderBy fail on exec_query (thanks to Oguzhan Alan)
+
+2010-11-30  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed bug #16501: DBAL does not support multi-column indexes in create table queries
+	* Added feature #16491: Provide a pass-through flag for sql_exec() which goes directly to the native MySQL engine
+
 2010-11-18  Xavier Perseguers  <typo3@perseguers.ch>
 
 	* Fixed bug #16392: Install tool cannot compare "ENGINE" of MySQL Tables when DBAL is active
