@@ -27,7 +27,7 @@
 
 
 /**
- * An exception for an expected token that was not found.
+ * An exception for an unknown encountered token.
  *
  * $Id$
  *
@@ -35,15 +35,15 @@
  * @package TYPO3
  * @subpackage dbal\sql\error
  */
-class tx_dbal_sql_error_TokenExpected extends t3lib_exception {
+class tx_dbal_sql_error_UnknownToken extends t3lib_exception {
 
 	/**
 	 * Default constructor.
 	 *
-	 * @param string $class
+	 * @param integer $class
 	 */
 	public function __construct($class) {
-		parent::__construct('Expected token from class ' . $class);
+		parent::__construct('Unknown lexeme class  ' . $class);
 	}
 
 }

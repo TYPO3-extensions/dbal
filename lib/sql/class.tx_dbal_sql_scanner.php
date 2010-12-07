@@ -777,7 +777,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 *
 	 * @param integer $token
 	 * @return string
-	 * @throws InvalidArgumentException
+	 * @throws tx_dbal_sql_error_UnknownToken
 	 * @static
 	 */
 	public static function tokenClass($token) {
@@ -1052,12 +1052,12 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			case self::T_ZEROFILL                      : return 'ZEROFILL';
 
 			default:
-				throw new InvalidArgumentException('Unknown lexeme class ' . token, 1291712190);
+				throw t3lib_div::makeInstance('tx_dbal_sql_error_UnknownToken', $token);
 		}
 	}
 
 	/**
-	 * Puts next character in $this->ch and update the position.
+	 * Puts next character in $this->ch and updates the position.
 	 *
 	 * @param integer $token
 	 * @return integer

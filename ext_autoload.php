@@ -12,6 +12,7 @@ return array(
 	'tx_dbal_sql_tokens' => $extensionPath . 'lib/sql/interface.tx_dbal_sql_tokens.php',
 	'tx_dbal_sql_tree' => $extensionPath . 'lib/sql/class.tx_dbal_sql_tree.php',
 	'tx_dbal_sql_error_tokenexpected' => $extensionPath . 'lib/sql/error/class.tx_dbal_sql_error_tokenexpected.php',
+	'tx_dbal_sql_error_unknowntoken' => $extensionPath . 'lib/sql/error/class.tx_dbal_sql_error_unknowntoken.php',
 	'tx_dbal_system_io_reader' => $extensionPath . 'lib/system/io/class.tx_dbal_system_io_reader.php',
 	'tx_dbal_system_io_stringreader' => $extensionPath . 'lib/system/io/class.tx_dbal_system_io_stringreader.php',
 
