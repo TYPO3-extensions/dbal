@@ -210,28 +210,24 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 					return self::T_BITOR;
 				}
 			case '"':
-				$this->buffer .= $this->ch;
-				$this->nextCh();
-				while ($this->ch !== '"') {
-					if ($this->ch !== "\n") {
-						$this->buffer .= $this->ch;
-						$this->nextCh();
-					} else {
-						$this->global->error($this->start, 'String not ended');
-						return self::BAD;
-					}
-				}
-				$this->buffer .= $this->ch;
-				$this->nextCh();
-				$this->chars = $this->buffer;
-				return self::T_STRING;
 			case "'":
+				$quoteChar = $this->ch;
 				$this->buffer .= $this->ch;
 				$this->nextCh();
-				while ($this->ch !== "'") {
+				while ($this->ch !== $quoteChar) {
 					if ($this->ch !== "\n") {
 						$this->buffer .= $this->ch;
+						if ($this->ch === '\\') {
+							$this->nextCh();
+							if ($this->ch === $quoteChar || $this->ch === '\\') {
+								$this->buffer .= $this->ch;
+							} else {
+								$this->global->error($this->start, 'Invalid escape character');
+								return self::BAD;
+							}
+						}
 						$this->nextCh();
+
 					} else {
 						$this->global->error($this->start, 'String not ended');
 						return self::BAD;
