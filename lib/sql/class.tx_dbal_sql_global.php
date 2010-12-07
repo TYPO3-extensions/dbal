@@ -28,13 +28,15 @@
 
 /**
  * This class provides methods to show error and debug messages.
+ * The whole parser is based on compilation course (LAMP) I attended at
+ * Swiss Federal Institute of Technology. Nice to use that again ;-)
+ * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
  * $Id$
  *
  * @author Xavier Perseguers <typo3@perseguers.ch>
  * @package TYPO3
  * @subpackage dbal\sql
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  */
 class tx_dbal_sql_Global implements t3lib_Singleton {
 
