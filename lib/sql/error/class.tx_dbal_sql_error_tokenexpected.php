@@ -29,11 +29,13 @@
 /**
  * An exception for an expected token that was not found.
  *
- * $Id$
- *
- * @author Xavier Perseguers <typo3@perseguers.ch>
- * @package TYPO3
- * @subpackage dbal\sql\error
+ * @category    Exception
+ * @package     TYPO3
+ * @subpackage  tx_dbal\sql\error
+ * @author      Xavier Perseguers <typo3@perseguers.ch>
+ * @copyright   Copyright 2010
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ * @version     SVN: $Id$
  */
 class tx_dbal_sql_error_TokenExpected extends t3lib_exception {
 
@@ -46,6 +48,11 @@ class tx_dbal_sql_error_TokenExpected extends t3lib_exception {
 		parent::__construct('Expected token from class ' . $class);
 	}
 
+}
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/error/class.tx_dbal_sql_error_tokenexpected.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/error/class.tx_dbal_sql_error_tokenexpected.php']);
 }
 
 ?>

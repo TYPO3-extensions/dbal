@@ -33,11 +33,13 @@
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
  * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
- * $Id$
- *
- * @author Xavier Perseguers <typo3@perseguers.ch>
- * @package TYPO3
- * @subpackage dbal\sql
+ * @category    Parser
+ * @package     TYPO3
+ * @subpackage  tx_dbal\sql
+ * @author      Xavier Perseguers <typo3@perseguers.ch>
+ * @copyright   Copyright 2010
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ * @version     SVN: $Id$
  */
 class tx_dbal_sql_Global implements t3lib_Singleton {
 
@@ -53,3 +55,10 @@ class tx_dbal_sql_Global implements t3lib_Singleton {
 	}
 
 }
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/class.tx_dbal_sql_global.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/class.tx_dbal_sql_global.php']);
+}
+
+?>

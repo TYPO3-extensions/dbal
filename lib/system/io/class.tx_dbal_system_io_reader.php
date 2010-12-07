@@ -30,12 +30,13 @@
 /**
  * Abstract class for reading character streams.
  *
- * $Id$
- *
- * @author Xavier Perseguers <typo3@perseguers.ch>
- *
- * @package TYPO3
- * @subpackage dbal\system\io
+ * @category    System
+ * @package     TYPO3
+ * @subpackage  tx_dbal\system\io
+ * @author      Xavier Perseguers <typo3@perseguers.ch>
+ * @copyright   Copyright 2010
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ * @version     SVN: $Id$
  */
 abstract class tx_dbal_System_Io_Reader {
 

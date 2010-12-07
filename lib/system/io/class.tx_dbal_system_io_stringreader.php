@@ -30,12 +30,13 @@
 /**
  * Dummy class for reading from string of characters.
  *
- * $Id$
- *
- * @author Xavier Perseguers <typo3@perseguers.ch>
- *
- * @package TYPO3
- * @subpackage dbal\system\io
+ * @category    System
+ * @package     TYPO3
+ * @subpackage  tx_dbal\system\io
+ * @author      Xavier Perseguers <typo3@perseguers.ch>
+ * @copyright   Copyright 2010
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ * @version     SVN: $Id$
  */
 class tx_dbal_System_Io_StringReader extends tx_dbal_System_Io_Reader {
 
@@ -151,6 +152,11 @@ class tx_dbal_System_Io_StringReader extends tx_dbal_System_Io_Reader {
 		return TRUE;
 	}
 
+}
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/system/io/class.tx_dbal_system_io_stringreader.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/system/io/class.tx_dbal_system_io_stringreader.php']);
 }
 
 ?>
