@@ -29,7 +29,7 @@
 /**
  * This interface contains all classes of lexemes.
  *
- * @category    Parser
+ * @category    Interfaces
  * @package     TYPO3
  * @subpackage  tx_dbal\sql
  * @author      Xavier Perseguers <typo3@perseguers.ch>
@@ -42,7 +42,7 @@ interface tx_dbal_sql_Tokens {
 	const EOF                             =  -1; // end of file
     const BAD                             =   0; // unknown lexeme
 
-    const T_IDENT                         =   1; // identifier
+    const T_IDENTIFIER                    =   1; // identifier
     const T_NUMBER                        =   2; // number
     const T_STRING                        =   3; // string
 

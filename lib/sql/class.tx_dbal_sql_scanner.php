@@ -270,7 +270,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 				$this->chars = '';
 				return $rep;
 			} else {
-				return self::T_IDENT;
+				return self::T_IDENTIFIER;
 			}
 		} else {
 			$this->global->error($this->start, 'Invalid character');
@@ -286,7 +286,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	 */
 	public function representation() {
 		$output = $this->tokenClass($this->token);
-		if ($this->token == self::T_NUMBER || $this->token == self::T_IDENT || $this->token == self::T_STRING) {
+		if ($this->token == self::T_NUMBER || $this->token == self::T_IDENTIFIER || $this->token == self::T_STRING) {
 			$output .= '(' . $this->chars . ')';
 		}
 		return $output;
@@ -787,7 +787,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			case self::EOF                             : return '<eof>';
 			case self::BAD                             : return '<bad>';
 
-			case self::T_IDENT                         : return 'ident';
+			case self::T_IDENTIFIER                    : return 'identifier';
 			case self::T_NUMBER                        : return 'number';
 			case self::T_STRING                        : return 'string';
 

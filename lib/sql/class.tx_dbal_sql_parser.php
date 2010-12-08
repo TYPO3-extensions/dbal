@@ -92,7 +92,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	/**
 	 * Returns the syntactic tree built from input stream.
 	 *
-	 * @return tx_dbal_sql_Tree
+	 * @return tx_dbal_sql_AbstractTree
 	 */
 	public function parse() {
 		return $this->parseSql();
@@ -101,7 +101,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	/**
 	 * Returns the syntactic tree built from SQL input stream.
 	 *
-	 * @return tx_dbal_sql_Tree
+	 * @return tx_dbal_sql_AbstractTree
 	 */
 	private function parseSql() {
 		switch ($this->token) {
@@ -158,7 +158,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * 		["LIMIT" [offset,] row_count]
 	 *
 	 *
-	 * @return tx_dbal_sql_Tree
+	 * @return tx_dbal_sql_AbstractTree
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	private function parseSelect() {

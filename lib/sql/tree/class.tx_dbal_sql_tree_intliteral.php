@@ -27,22 +27,50 @@
 
 
 /**
- * Abstract class for the tree nodes of the abstract grammar.
+ * An integer literal tree.
  *
- * The whole parser is based on compilation course (LAMP) I attended at
- * Swiss Federal Institute of Technology. Nice to use that again ;-)
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
- *
- * @category    Parser
+ * @category    Tree
  * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @subpackage  tx_dbal\sql\tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-abstract class tx_dbal_sql_Tree {
+class tx_dbal_sql_tree_IntLiteral extends tx_dbal_sql_AbstractTree {
 
+	/**
+	 * @var integer
+	 */
+	public $value;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param integer $value
+	 */
+	public function __construct($pos, $value) {
+		parent::__construct($pos);
+
+		$this->value = $value;
+	}
+
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param tx_dbal_sql_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(tx_dbal_sql_Visitor $visitor) {
+		$visitor->caseIntLiteral($this);
+	}
+
+}
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_intliteral.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_iintliteral.php']);
 }
 
 ?>
