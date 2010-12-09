@@ -83,12 +83,28 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 				$obj->apply($this);
 				break;
 			case is_array($obj):
-				foreach ($obj as $tree) {
-					$this->output($tree);
+				for ($i = 0; $i < count($obj) - 1; $i++) {
+					$this->output($obj[$i]);
+					$this->output(', ');
 				}
+				$this->output($obj[count($obj) - 1]);
 				break;
 			default:
 				$this->buffer .= (string)$obj;
+		}
+		return $this;
+	}
+
+	/**
+	 * Outputs an array of SQL statements.
+	 *
+	 * @param tx_dbal_sql_AbstractTree[] $trees
+	 * @return tx_dbal_sql_Visitor
+	 */
+	public function outputStatements(array $trees) {
+		foreach ($trees as $tree) {
+			$this->output($tree);
+			$this->output(';');
 		}
 		return $this;
 	}
@@ -155,7 +171,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree) {
-
+		$this->output($tree->name);
 	}
 
 	/**
@@ -163,7 +179,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree) {
-
+		$this->output($tree->value);
 	}
 
 	/**
@@ -179,8 +195,35 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseSelect(tx_dbal_sql_tree_Select $tree) {
-		$this->output('SELECT');
+		$this->output('SELECT ');
+		$this->output($tree->selectExpr);
+		$this->output(' FROM ');
 	}
+
+	/**
+	 * @param tx_dbal_sql_tree_SelectExpr $tree
+	 * @return void
+	 */
+	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree) {
+		if ($tree->table) {
+			$this->output($tree->table);
+			$this->output('.');
+		}
+		$this->output($tree->field);
+		if ($tree->alias) {
+			$this->output(' AS ');
+			$this->output($tree->alias);
+		}
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_Star $tree
+	 * @return void
+	 */
+	public function caseStar(tx_dbal_sql_tree_Star $tree) {
+		$this->output('*');
+	}
+
 }
 
 

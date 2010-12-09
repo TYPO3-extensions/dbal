@@ -42,17 +42,17 @@ class tx_dbal_sql_tree_Select extends tx_dbal_sql_AbstractTree {
 	/**
 	 * @var tx_dbal_sql_tree_SelectExpr[]
 	 */
-	protected $selectExpr;
+	public $selectExpr;
 
 	/**
 	 * @var tx_dbal_sql_tree_TableReference[]
 	 */
-	protected $tableReferences;
+	public $tableReferences;
 
 	/**
 	 * @var tx_dbal_sql_tree_WhereCondition
 	 */
-	protected $whereCondition;
+	public $whereCondition;
 
 	/**
 	 * Default constructor.

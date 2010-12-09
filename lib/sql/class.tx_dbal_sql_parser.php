@@ -152,7 +152,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	/**
 	 * Parses a SELECT statement.
 	 *
-	 * "SELECT"
+	 * SELECT := "SELECT"
 	 * 		["ALL" | "DISTINCT"]
 	 * 		select_expr ["," select_expr ...]
 	 * 		"FROM" table_references
@@ -167,27 +167,62 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	private function parseSelect() {
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
+		//return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
 		$this->accept(self::T_SELECT);
+		$selectExpr = array();
 		do {
-			if ($this->token == self::T_IDENTIFIER || $this->token == self::T_STAR) {
-				$this->accept($this->token);
-			}
+			$selectExpr[] = $this->parseSelectExpr();
 		} while ($this->acceptIf(self::T_COMMA));
 		$this->accept(self::T_FROM);
 		$this->accept(self::T_IDENTIFIER);
 		//$this->accept(self::T_WHERE);
 
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpr, null, null);
 	}
 
 	/**
 	 * Parses a select_expr.
 	 *
+	 * select_expr := [identifier "."] {identifier ["AS"] [identifier] | "*"}
+	 *
 	 * @return tx_dbal_sql_tree_SelectExpr
 	 */
 	private function parseSelectExpr() {
+		$table = null;
+		if ($this->token == self::T_IDENTIFIER) {
+			$name = $this->chars;
+			$this->accept(self::T_IDENTIFIER);
+			$tableOrField = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
 
+			if ($this->token == self::T_DOT) {
+				$table = $tableOrField;
+				$this->accept(self::T_DOT);
+
+				if ($this->token == self::T_IDENTIFIER) {
+					$name = $this->chars;
+					$this->accept(self::T_IDENTIFIER);
+					$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+				} else {
+					$this->accept(self::T_STAR);
+					$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Star', $this->start);
+				}
+			} else {
+				$field = $tableOrField;
+			}
+		} else {
+			$this->accept(self::T_STAR);
+			$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Star', $this->start);
+		}
+
+		$alias = null;
+		if ($this->token == self::T_AS || $this->token == self::T_IDENTIFIER) {
+			$this->acceptIf(self::T_AS);
+			$name = $this->chars;
+			$this->accept(self::T_IDENTIFIER);
+			$alias = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+		}
+
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_SelectExpr', $this->start, $table, $field, $alias);
 	}
 }
 

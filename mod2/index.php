@@ -119,7 +119,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		$printer = t3lib_div::makeInstance('tx_dbal_sql_Printer');
 		/* @var tx_dbal_sql_Printer $printer */
 
-		$content = $printer->output($parser->parse())->flush();
+		$content = $printer->outputStatements($parser->parse())->flush();
 
 		$this->content .= $this->doc->section('Printer', $content);
 

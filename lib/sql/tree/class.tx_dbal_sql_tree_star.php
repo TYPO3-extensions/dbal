@@ -27,26 +27,42 @@
 
 
 /**
- * This interface provides method for the visitor design pattern.
+ * A '*' tree.
  *
- * @category    Interfaces
+ * @category    Tree
  * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @subpackage  tx_dbal\sql\tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface tx_dbal_sql_Visitor {
+class tx_dbal_sql_tree_Star extends tx_dbal_sql_AbstractTree {
 
-	public function caseBad(tx_dbal_sql_tree_Bad $tree);
-	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
-	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
-	public function caseOperation(tx_dbal_sql_tree_Operation $tree);
-	public function caseSelect(tx_dbal_sql_tree_Select $tree);
-	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree);
-	public function caseStar(tx_dbal_sql_tree_Star $tree);
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 */
+	public function __construct($pos) {
+		parent::__construct($pos);
+	}
 
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param tx_dbal_sql_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(tx_dbal_sql_Visitor $visitor) {
+		$visitor->caseStar($this);
+	}
+
+}
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_star.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_star.php']);
 }
 
 ?>

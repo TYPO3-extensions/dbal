@@ -19,6 +19,8 @@ return array(
 	'tx_dbal_sql_tree_intliteral' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_intliteral.php',
 	'tx_dbal_sql_tree_operation' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_operation.php',
 	'tx_dbal_sql_tree_select' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_select.php',
+	'tx_dbal_sql_tree_selectexpr' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_selectexpr.php',
+	'tx_dbal_sql_tree_star' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_star.php',
 	'tx_dbal_sql_visitor' => $extensionPath . 'lib/interfaces/interface.tx_dbal_sql_visitor.php',
 	'tx_dbal_system_io_reader' => $extensionPath . 'lib/system/io/class.tx_dbal_system_io_reader.php',
 	'tx_dbal_system_io_stringreader' => $extensionPath . 'lib/system/io/class.tx_dbal_system_io_stringreader.php',
