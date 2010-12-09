@@ -166,56 +166,13 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_ExprAnd $tree
+	 * @param tx_dbal_sql_tree_BooleanPrimary $tree
 	 * @return void
 	 */
-	public function caseExprAnd(tx_dbal_sql_tree_ExprAnd $tree) {
-		$this->output('(')->indent()->outputNewLine();
+	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree) {
 		$this->output($tree->left);
-		$this->unindent()->outputNewLine();
-		$this->output('AND');
-		$this->indent()->outputNewLine();
+		$this->output($tree->comparisonOperator);
 		$this->output($tree->right);
-		$this->unindent()->outputNewLine();
-		$this->output(')');
-	}
-
-	/**
-	 * @param tx_dbal_sql_tree_ExprNot $tree
-	 * @return void
-	 */
-	public function caseExprNot(tx_dbal_sql_tree_ExprNot $tree) {
-		$this->output('NOT ')->output($tree->left);
-	}
-
-	/**
-	 * @param tx_dbal_sql_tree_ExprOr $tree
-	 * @return void
-	 */
-	public function caseExprOr(tx_dbal_sql_tree_ExprOr $tree) {
-		$this->output('(')->indent()->outputNewLine();
-		$this->output($tree->left);
-		$this->unindent()->outputNewLine();
-		$this->output('OR');
-		$this->indent()->outputNewLine();
-		$this->output($tree->right);
-		$this->unindent()->outputNewLine();
-		$this->output(')');
-	}
-
-	/**
-	 * @param tx_dbal_sql_tree_ExprXor $tree
-	 * @return void
-	 */
-	public function caseExprXor(tx_dbal_sql_tree_ExprXor $tree) {
-		$this->output('(')->indent()->outputNewLine();
-		$this->output($tree->left);
-		$this->unindent()->outputNewLine();
-		$this->output('XOR');
-		$this->indent()->outputNewLine();
-		$this->output($tree->right);
-		$this->unindent()->outputNewLine();
-		$this->output(')');
 	}
 
 	/**
@@ -239,6 +196,14 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseOperation(tx_dbal_sql_tree_Operation $tree) {
+		$this->output('(')->indent()->outputNewLine();
+		$this->output($tree->left);
+		$this->unindent()->outputNewLine();
+		$this->output('operator(')->output($tree->operator)->output(')');
+		$this->indent()->outputNewLine();
+		$this->output($tree->right);
+		$this->unindent()->outputNewLine();
+		$this->output(')');
 	}
 
 	/**
@@ -269,11 +234,27 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	}
 
 	/**
+	 * @param tx_dbal_sql_tree_SimpleExpr $tree
+	 * @return void
+	 */
+	public function caseSimpleExpr(tx_dbal_sql_tree_SimpleExpr $tree) {
+		// TODO
+	}
+
+	/**
 	 * @param tx_dbal_sql_tree_Star $tree
 	 * @return void
 	 */
 	public function caseStar(tx_dbal_sql_tree_Star $tree) {
 		$this->output('*');
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_StringLiteral $tree
+	 * @return void
+	 */
+	public function caseStringLiteral(tx_dbal_sql_tree_StringLiteral $tree) {
+		$this->output($tree->value);
 	}
 
 	/**

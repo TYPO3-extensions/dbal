@@ -27,7 +27,7 @@
 
 
 /**
- * An OR expr tree.
+ * A simple_expr tree.
  *
  * @category    Tree
  * @package     TYPO3
@@ -37,7 +37,33 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_ExprOr extends tx_dbal_sql_tree_AbstractExpr {
+class tx_dbal_sql_tree_SimpleExpr extends tx_dbal_sql_tree_AbstractExpr {
+
+	/**
+	 * @var integer
+	 */
+	public $unaryOperator;
+
+	/**
+	 * @var tx_dbal_sql_tree_Select
+	 */
+	public $subquery;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param integer $unaryOperator
+	 * @param tx_dbal_sql_tree_AbstractExpr $simpleExpr
+	 * @param tx_dbal_sql_tree_select $subquery
+	 *
+	 */
+	public function __construct($pos, $unaryOperator, /* tx_dbal_sql_tree_AbstractExpr */ $simpleExpr, /* tx_dbal_sql_tree_Select */ $subquery = null) {
+		parent::__construct($pos, $simpleExpr, null);
+
+		$this->unaryOperator = $unaryOperator;
+		$this->subquery = $subquery;
+	}
 
 	/**
 	 * Applies the visitor onto this class.
@@ -46,14 +72,14 @@ class tx_dbal_sql_tree_ExprOr extends tx_dbal_sql_tree_AbstractExpr {
 	 * @return void
 	 */
 	public function apply(tx_dbal_sql_Visitor $visitor) {
-		$visitor->caseExprOr($this);
+		$visitor->caseSimpleExpr($this);
 	}
 
 }
 
 
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_expror.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_expror.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_simpleexpr.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_simpleexpr.php']);
 }
 
 ?>

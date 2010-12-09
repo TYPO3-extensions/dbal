@@ -31,7 +31,7 @@
  *
  * The whole parser is based on compilation course (LAMP) I attended at
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
+ * @link http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
  * @category    Parser
  * @package     TYPO3
@@ -164,7 +164,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 *
 	 * @return tx_dbal_sql_tree_Select
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	protected function parseSelect() {
 		$selectExpressions = array();
@@ -224,7 +224,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * select_expr := [identifier "."] {identifier ["AS"] [identifier] | "*"}
 	 *
 	 * @return tx_dbal_sql_tree_SelectExpr
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	protected function parseSelectExpr() {
 		$table = null;
@@ -271,7 +271,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *                    | join_table
 	 *
 	 * @return tx_dbal_sql_tree_TableReference
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/join.html
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/join.html
 	 */
 	protected function parseTableReference() {
 		return $this->parseTableFactor();
@@ -283,7 +283,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * table_factor := identifier [["AS"] identifier]
 	 *
 	 * @return tx_dbal_sql_tree_TableFactor
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/join.html
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/join.html
 	 */
 	protected function parseTableFactor() {
 		$name = $this->chars;
@@ -307,7 +307,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * where_condition := expr
 	 *
 	 * @return tx_dbal_sql_tree_Expr
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseWhereCondition() {
 		return $this->parseExpr();
@@ -328,14 +328,14 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *         | boolean_primary
 	 *
 	 * @return tx_dbal_sql_tree_AbstractExpr
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseExpr() {
 		if ($this->token == self::T_NOT || $this->token == self::T_LOGICNOT) {
 			$this->accept($this->token);
 			return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprNot', $this->start, $this->parseExpr());
 		} else {
-			$expr = t3lib_div::makeInstance('tx_dbal_sql_tree_ExprBooleanPrimary', $this->parseBooleanPrimary());
+			$expr = $this->parseBooleanPrimary();
 			/*
 			if ($this->token == self::T_IS) {
 				$this->accept(self::T_IS);
@@ -346,15 +346,12 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			switch ($this->token) {
 				case self::T_OR:        // 'OR'
 				case self::T_LOGICOR:   // '||'
-					$this->accept($this->token);
-					return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprOr', $this->start, $expr, $this->parseExpr());
 				case self::T_AND:       // 'AND'
 				case self::T_LOGICAND:  // '&&'
-					$this->accept($this->token);
-					return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprAnd', $this->start, $expr, $this->parseExpr());
 				case self::T_XOR:       // 'XOR'
-					$this->accept(self::T_XOR);
-					return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprXor', $this->start, $expr, $this->parseExpr());
+					$operator = $this->token;
+					$this->accept($this->token);
+					return t3lib_div::makeInstance('tx_dbal_sql_tree_Operation', $this->start, $operator, $expr, $this->parseExpr());
 			}
 
 			return $expr;
@@ -373,6 +370,37 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * comparison_operator := "=" | ">=" | ">" | "<=" | "<" | "<>" | "!="
 	 *
+	 * @return tx_dbal_sql_AbstractTree
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 */
+	protected function parseBooleanPrimary() {
+		$predicate = $this->parsePredicate();
+		$comparisonOperators = array(
+			self::T_EQUAL,
+			self::T_GREATEREQUAL,
+			self::T_GREATER,
+			self::T_LESSEQUAL,
+			self::T_LESS,
+			self::T_BOX,
+			self::T_NOTEQUAL,
+		);
+		if (in_array($this->token, $comparisonOperators)) {
+			$comparisonOperator = $this->token;
+			$this->accept($comparisonOperator);
+			return t3lib_div::makeInstance(
+				'tx_dbal_sql_tree_BooleanPrimary',
+				$this->start,
+				$predicate,
+				$comparisonOperator,
+				$this->parsePredicate()
+			);
+		}
+
+		return $predicate;
+	}
+
+	/**
+	 * Parses a predicate.
 	 *
 	 * predicate :=
 	 *              bit_expr ["NOT"] "IN" "(" subquery ")"
@@ -381,6 +409,18 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *              | bit_expr ["NOT"] "LIKE" simple_expr
 	 *              | bit_expr
 	 *
+	 * @return tx_dbal_sql_AbstractTree
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 */
+	protected function parsePredicate() {
+		$bitExpr = $this->parseBitExpr();
+
+		// TODO
+		return $bitExpr;
+	}
+
+	/**
+	 * Parses a bit_expr.
 	 *
 	 * bit_expr :=
 	 *              bit_expr "|" bit_expr
@@ -395,6 +435,34 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *              | bit_expr "^" bit_expr
 	 *              | simple_expr
 	 *
+	 * @return tx_dbal_sql_AbstractTree
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 */
+	protected function parseBitExpr() {
+		$simpleExpr = $this->parseSimpleExpr();
+		$operators = array(
+			self::T_BITOR,
+			self::T_BITAND,
+			self::T_PLUS,
+			self::T_MINUS,
+			self::T_STAR,
+			self::T_DIVIDE,
+			self::T_DIV,
+			self::T_MOD,
+			self::T_MODULO,
+			self::T_POW,
+		);
+		while (in_array($this->token, $operators)) {
+			$operator = $this->token;
+			// TODO: take priority of operators into account
+			$simpleExpr = t3lib_div::makeInstance('tx_dbal_sql_tree_Operation', $operator, $simpleExpr, $this->parseBitExpr());
+		}
+
+		return $simpleExpr;
+	}
+
+	/**
+	 * Parses a simple_expr.
 	 *
 	 * simple_expr :=
 	 *                literal
@@ -410,12 +478,53 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *                | "EXISTS" "(" subquery ")"
 	 *                | case_expr
 	 *
-	 * @return tx_dbal_sql_tree_AbstractExpr
-	 * @see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 * @return tx_dbal_sql_AbstractTree
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
-	protected function parseBooleanPrimary() {
-		// TODO
+	protected function parseSimpleExpr() {
+		switch ($this->token) {
+			case self::T_STRING:
+				$value = $this->chars;
+				$this->accept(self::T_STRING);
+				return t3lib_div::makeInstance('tx_dbal_sql_tree_StringLiteral', $this->start, $value);
+			case self::T_NUMBER:
+				$value = $this->chars;
+				$this->accept(self::T_NUMBER);
+				return t3lib_div::makeInstance('tx_dbal_sql_tree_IntLiteral', $this->start, $value);
+			case self::T_IDENTIFIER:
+				$name = $this->chars;
+				$this->accept(self::T_IDENTIFIER);
+				return t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+			case self::T_PLUS:
+			case self::T_MINUS:
+			case self::T_TILDE:
+			case self::T_LOGICNOT:
+			case self::T_BINARY:
+				$unaryOperator = $this->token;
+				return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, $unaryOperator, $this->parseSimpleExpr());
+			case self::T_LPAREN:
+				$subquery = null;
+				$expr = null;
+				$this->accept(self::T_LPAREN);
+				if ($this->token == self::T_SELECT) {
+					$subquery = $this->parseSubquery();
+				} else {
+					$expr = $this->parseExpr();
+				}
+				$this->accept(self::T_RPAREN);
+				return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, '', $expr, $subquery);
+			case self::T_EXISTS:
+				$this->accept(self::T_EXISTS);
+				$subquery = $this->parseSubquery();
+				$this->accept(self::T_RPAREN);
+				return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, 'EXISTS', null, $subquery);
+			case self::T_CASE:
+				// TODO
+				break;
+			// TODO: function call
+		}
 	}
+
 }
 
 

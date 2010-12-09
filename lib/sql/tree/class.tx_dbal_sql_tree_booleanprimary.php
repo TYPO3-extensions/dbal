@@ -27,7 +27,7 @@
 
 
 /**
- * An AND expr tree.
+ * A boolean_primary tree.
  *
  * @category    Tree
  * @package     TYPO3
@@ -37,7 +37,27 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_ExprAnd extends tx_dbal_sql_tree_AbstractExpr {
+class tx_dbal_sql_tree_BooleanPrimary extends tx_dbal_sql_tree_AbstractExpr {
+
+	/**
+	 * @var integer
+	 */
+	public $comparisonOperator;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param tx_dbal_sql_AbstractTree $left
+	 * @param integer $comparisonOperator
+	 * @param tx_dbal_sql_AbstractTree $right
+	 *
+	 */
+	public function __construct($pos, tx_dbal_sql_AbstractTree $left, $comparisonOperator, tx_dbal_sql_AbstractTree $right) {
+		parent::__construct($pos, $left, $right);
+
+		$this->comparisonOperator = $comparisonOperator;
+	}
 
 	/**
 	 * Applies the visitor onto this class.
@@ -46,14 +66,14 @@ class tx_dbal_sql_tree_ExprAnd extends tx_dbal_sql_tree_AbstractExpr {
 	 * @return void
 	 */
 	public function apply(tx_dbal_sql_Visitor $visitor) {
-		$visitor->caseExprAnd($this);
+		$visitor->caseBooleanPrimary($this);
 	}
 
 }
 
 
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_exprand.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_exprand.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_booleanprimary.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_booleanprimary.php']);
 }
 
 ?>

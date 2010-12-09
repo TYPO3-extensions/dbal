@@ -40,16 +40,15 @@
 interface tx_dbal_sql_Visitor {
 
 	public function caseBad(tx_dbal_sql_tree_Bad $tree);
-	public function caseExprAnd(tx_dbal_sql_tree_ExprAnd $tree);
-	public function caseExprNot(tx_dbal_sql_tree_ExprNot $tree);
-	public function caseExprOr(tx_dbal_sql_tree_ExprOr $tree);
-	public function caseExprXor(tx_dbal_sql_tree_ExprXor $tree);
+	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree);
 	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
 	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
 	public function caseOperation(tx_dbal_sql_tree_Operation $tree);
 	public function caseSelect(tx_dbal_sql_tree_Select $tree);
 	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree);
+	public function caseSimpleExpr(tx_dbal_sql_tree_SimpleExpr $tree);
 	public function caseStar(tx_dbal_sql_tree_Star $tree);
+	public function caseStringLiteral(tx_dbal_sql_tree_StringLiteral $tree);
 	public function caseTableFactor(tx_dbal_sql_tree_TableFactor $tree);
 
 }

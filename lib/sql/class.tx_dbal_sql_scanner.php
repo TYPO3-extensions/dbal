@@ -31,7 +31,7 @@
  *
  * The whole parser is based on compilation course (LAMP) I attended at
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
+ * @link http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
  * @category    Parser
  * @package     TYPO3
@@ -214,6 +214,8 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 				} else {
 					return self::T_BITOR;
 				}
+			case '~':
+				return $this->nextCh(self::T_TILDE);
 			case '"':
 			case "'":
 				$quoteChar = $this->ch;
@@ -819,6 +821,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			case self::T_LOGICOR                       : return '||';
 			case self::T_BITAND                        : return '&';
 			case self::T_BITOR                         : return '|';
+			case self::T_TILDE                         : return '~';
 
 			// Functions
 			case self::T_CONCAT                        : return 'CONCAT';

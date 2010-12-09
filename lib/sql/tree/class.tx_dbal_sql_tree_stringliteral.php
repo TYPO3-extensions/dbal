@@ -27,7 +27,7 @@
 
 
 /**
- * A NOT expr tree.
+ * A string literal tree.
  *
  * @category    Tree
  * @package     TYPO3
@@ -37,7 +37,24 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_ExprNot extends tx_dbal_sql_tree_AbstractExpr {
+class tx_dbal_sql_tree_StringLiteral extends tx_dbal_sql_AbstractTree {
+
+	/**
+	 * @var string
+	 */
+	public $value;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param integer $value
+	 */
+	public function __construct($pos, $value) {
+		parent::__construct($pos);
+
+		$this->value = $value;
+	}
 
 	/**
 	 * Applies the visitor onto this class.
@@ -46,14 +63,14 @@ class tx_dbal_sql_tree_ExprNot extends tx_dbal_sql_tree_AbstractExpr {
 	 * @return void
 	 */
 	public function apply(tx_dbal_sql_Visitor $visitor) {
-		$visitor->caseExprNot($this);
+		$visitor->caseStringLiteral($this);
 	}
 
 }
 
 
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_exprnot.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_exprnot.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_stringliteral.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_stringliteral.php']);
 }
 
 ?>

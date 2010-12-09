@@ -73,6 +73,7 @@ interface tx_dbal_sql_Tokens {
 	const T_LOGICOR                       =  25; // '||'
 	const T_BITAND                        =  26; // '&'
 	const T_BITOR                         =  27; // '|'
+	const T_TILDE                         =  28; // '~'
 
 	// Functions
 	const T_CONCAT                        =  40; // 'CONCAT'
