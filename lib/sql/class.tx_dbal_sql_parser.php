@@ -167,6 +167,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	private function parseSelect() {
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
 		$this->accept(self::T_SELECT);
 		do {
 			if ($this->token == self::T_IDENTIFIER || $this->token == self::T_STAR) {
@@ -178,6 +179,15 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		//$this->accept(self::T_WHERE);
 
 		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
+	}
+
+	/**
+	 * Parses a select_expr.
+	 *
+	 * @return tx_dbal_sql_tree_SelectExpr
+	 */
+	private function parseSelectExpr() {
+
 	}
 }
 

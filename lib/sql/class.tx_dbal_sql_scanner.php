@@ -155,6 +155,8 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 				return $this->nextCh(self::T_LPAREN);
 			case ')':
 				return $this->nextCh(self::T_RPAREN);
+			case '.':
+				return $this->nextCh(self::T_DOT);
 			case ',':
 				return $this->nextCh(self::T_COMMA);
 			case ';':
@@ -260,7 +262,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			while (($this->ch >= 'a' && $this->ch <= 'z')
 					|| ($this->ch >= 'A' && $this->ch <= 'Z')
 					|| ($this->ch >= '0' && $this->ch <= '9')
-					|| $this->ch === '_' || $this->ch === '.') {
+					|| $this->ch === '_') {
 				$this->buffer .= $this->ch;
 				$this->nextCh();
 			}
@@ -793,6 +795,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 
 			case self::T_LPAREN                        : return '(';
 			case self::T_RPAREN                        : return ')';
+			case self::T_DOT                           : return '.';
 			case self::T_COMMA                         : return ',';
 			case self::T_SEMICOLON                     : return ';';
 			case self::T_QUESTION                      : return '?';

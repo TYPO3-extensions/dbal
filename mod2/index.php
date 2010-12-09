@@ -65,7 +65,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		$this->content .= $this->doc->header('SQL Parser');
 		$this->content .= $this->doc->spacer(5);
 
-		$sql = 'SELECT * FROM sys_refindex, tx_dam_file_tracking WHERE sys_refindex.tablename = \'tx_dam_file_tracking\''
+		$sql = 'SELECT sys_refindex.*, tx_dam_file_tracking.* FROM sys_refindex, tx_dam_file_tracking WHERE sys_refindex.tablename = \'tx_dam_file_tracking\''
 			. ' AND sys_refindex.ref_string LIKE CONCAT(tx_dam_file_tracking.file_path, tx_dam_file_tracking.file_name)';
 
 		/************************************

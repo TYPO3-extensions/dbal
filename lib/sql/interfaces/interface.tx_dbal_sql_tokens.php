@@ -40,38 +40,39 @@
 interface tx_dbal_sql_Tokens {
 
 	const EOF                             =  -1; // end of file
-    const BAD                             =   0; // unknown lexeme
+	const BAD                             =   0; // unknown lexeme
 
-    const T_IDENTIFIER                    =   1; // identifier
-    const T_NUMBER                        =   2; // number
-    const T_STRING                        =   3; // string
+	const T_IDENTIFIER                    =   1; // identifier
+	const T_NUMBER                        =   2; // number
+	const T_STRING                        =   3; // string
 
-    const T_LPAREN                        =   4; // '('
-    const T_RPAREN                        =   5; // ')'
-	const T_COMMA                         =   6; // ','
-	const T_SEMICOLON                     =   7; // ';'
-	const T_QUESTION                      =   8; // '?'
+	const T_LPAREN                        =   4; // '('
+	const T_RPAREN                        =   5; // ')'
+	const T_DOT                           =   6; // '.'
+	const T_COMMA                         =   7; // ','
+	const T_SEMICOLON                     =   8; // ';'
+	const T_QUESTION                      =   9; // '?'
 
 	// Operators
 	// see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
-	const T_PLUS                          =   9; // '+'
-	const T_MINUS                         =  10; // '-'
-	const T_DIVIDE                        =  11; // '/'
-	const T_STAR                          =  12; // '*'
-	const T_MODULO                        =  13; // '%'
-	const T_POW                           =  14; // '^'
-	const T_EQUAL                         =  15; // '='
-	const T_GREATEREQUAL                  =  16; // '>='
-	const T_GREATER                       =  17; // '>'
-	const T_LESSEQUAL                     =  18; // '<='
-	const T_LESS                          =  19; // '<'
-	const T_BOX                           =  20; // '<>'
-	const T_NOTEQUAL                      =  21; // '!='
-	const T_LOGICNOT                      =  22; // '!'
-	const T_LOGICAND                      =  23; // '&&'
-	const T_LOGICOR                       =  24; // '||'
-	const T_BITAND                        =  25; // '&'
-	const T_BITOR                         =  26; // '|'
+	const T_PLUS                          =  10; // '+'
+	const T_MINUS                         =  11; // '-'
+	const T_DIVIDE                        =  12; // '/'
+	const T_STAR                          =  13; // '*'
+	const T_MODULO                        =  14; // '%'
+	const T_POW                           =  15; // '^'
+	const T_EQUAL                         =  16; // '='
+	const T_GREATEREQUAL                  =  17; // '>='
+	const T_GREATER                       =  18; // '>'
+	const T_LESSEQUAL                     =  19; // '<='
+	const T_LESS                          =  20; // '<'
+	const T_BOX                           =  21; // '<>'
+	const T_NOTEQUAL                      =  22; // '!='
+	const T_LOGICNOT                      =  23; // '!'
+	const T_LOGICAND                      =  24; // '&&'
+	const T_LOGICOR                       =  25; // '||'
+	const T_BITAND                        =  26; // '&'
+	const T_BITOR                         =  27; // '|'
 
 	// Functions
 	const T_CONCAT                        =  40; // 'CONCAT'
