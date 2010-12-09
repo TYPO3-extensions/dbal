@@ -333,7 +333,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	protected function parseExpr() {
 		if ($this->token == self::T_NOT || $this->token == self::T_LOGICNOT) {
 			$this->accept($this->token);
-			return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprNot', $this->start, $this->parseExpr());
+			return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, self::T_NOT, $this->parseExpr());
 		} else {
 			$expr = $this->parseBooleanPrimary();
 			/*
