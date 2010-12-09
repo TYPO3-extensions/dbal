@@ -25,7 +25,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/interface.tx_dbal_sql_visitor.php');
 
 /**
@@ -35,13 +34,13 @@ require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/interface.tx_db
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
  * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
- * @category    Parser
- * @package     TYPO3
+ * @category	Parser
+ * @package	 TYPO3
  * @subpackage  tx_dbal\sql
- * @author      Xavier Perseguers <typo3@perseguers.ch>
+ * @author	  Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
- * @license     http://www.gnu.org/copyleft/gpl.html
- * @version     SVN: $Id$
+ * @license	 http://www.gnu.org/copyleft/gpl.html
+ * @version	 SVN: $Id$
  */
 class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 
@@ -54,13 +53,13 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * Indent step
 	 * @var string
 	 */
-    private $step;
+	private $step;
 
-    /**
+	/**
 	 * Indent level
 	 * @var integer
 	 */
-    private $level;
+	private $level;
 
 	/**
 	 * Default constructor
@@ -68,7 +67,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	public function __construct() {
 		$this->buffer = '';
 		$this->step = '&nbsp;&nbsp;&nbsp;&nbsp;';
-        $this->level = 0;
+		$this->level = 0;
 	}
 
 	/**
@@ -123,34 +122,34 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 *
 	 * @return tx_dbal_sql_Visitor
 	 */
-    public function outputNewLine() {
-        $this->buffer .= "<br />\n";
-		for ($i = 0; $i < $this->level; $i++) {	// str_pad does not work as expected
+	public function outputNewLine() {
+		$this->buffer .= "<br />\n";
+		for ($i = 0; $i < $this->level; $i++) { // str_pad does not work as expected
 			$this->buffer .= $this->step;
 		}
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Increments the indent level.
 	 *
 	 * @return tx_dbal_sql_Visitor
 	 */
-    public function indent() {
-        $this->level++;
-        return $this;
-    }
+	public function indent() {
+		$this->level++;
+		return $this;
+	}
 
-    /**
+	/**
 	 * Decrements the indent level.
 	 *
 	 * @return tx_dbal_sql_Visitor
 	 */
-    public function unindent() {
-        $this->level--;
-        return $this;
-    }
+	public function unindent() {
+		$this->level--;
+		return $this;
+	}
 
 	/************************************
 	 *
@@ -163,8 +162,8 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseBad(tx_dbal_sql_tree_Bad $tree) {
-        $this->output('<<bad>>');
-    }
+		$this->output('<<bad>>');
+	}
 
 	/**
 	 * @param tx_dbal_sql_tree_Identifier $obj
@@ -187,7 +186,6 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseOperation(tx_dbal_sql_tree_Operation $tree) {
-
 	}
 
 	/**
@@ -222,7 +220,6 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	public function caseStar(tx_dbal_sql_tree_Star $tree) {
 		$this->output('*');
 	}
-
 }
 
 
