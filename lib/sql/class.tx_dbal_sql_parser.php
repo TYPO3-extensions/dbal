@@ -169,15 +169,49 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	protected function parseSelect() {
 		$selectExpressions = array();
 		$tableReferences = array();
+
+		// "SELECT"
 		$this->accept(self::T_SELECT);
+
+		// Fields to be selected
 		do {
 			$selectExpressions[] = $this->parseSelectExpr();
 		} while ($this->acceptIf(self::T_COMMA));
+
+		// "FROM"
 		$this->accept(self::T_FROM);
+
+		// Tables
 		do {
 			$tableReferences[] = $this->parseTableReference();
 		} while ($this->acceptIf(self::T_COMMA));
-		//$this->accept(self::T_WHERE);
+
+		// "WHERE"
+		if ($this->token == self::T_WHERE) {
+			$this->accept(self::T_WHERE);
+		}
+
+		// "GROUP" "BY"
+		if ($this->token == self::T_GROUP) {
+			$this->accept(self::T_GROUP);
+			$this->accept(self::T_BY);
+		}
+
+		// "HAVING"
+		if ($this->token == self::T_GROUP) {
+			$this->accept(self::T_HAVING);
+		}
+
+		// "ORDER" "BY"
+		if ($this->token == self::T_ORDER) {
+			$this->accept(self::T_ORDER);
+			$this->accept(self::T_BY);
+		}
+
+		// "LIMIT"
+		if ($this->token == self::T_LIMIT) {
+			$this->accept(self::T_LIMIT);
+		}
 
 		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpressions, $tableReferences, null);
 	}
