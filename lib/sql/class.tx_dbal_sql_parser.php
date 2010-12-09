@@ -70,7 +70,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @param integer $expected
 	 * @return boolean
 	 */
-	private function acceptIf($expected) {
+	protected function acceptIf($expected) {
 		if ($this->token == $expected) {
 			$this->nextToken();
 			return TRUE;
@@ -86,7 +86,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @return void
 	 * @throws tx_dbal_sql_error_TokenExpected
 	 */
-	private function accept($expected) {
+	protected function accept($expected) {
 		if (!$this->acceptIf($expected)) {
 			t3lib_div::debug($this->representation(), 'found');
 			$this->error($expected);
@@ -107,7 +107,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * @return tx_dbal_sql_AbstractTree[]
 	 */
-	private function parseSqlScript() {
+	protected function parseSqlScript() {
 		$sqlScript = array();
 		switch ($this->token) {
 			case self::T_SELECT:
@@ -166,7 +166,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @return tx_dbal_sql_tree_Select
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
-	private function parseSelect() {
+	protected function parseSelect() {
 		$selectExpressions = array();
 		$tableReferences = array();
 		$this->accept(self::T_SELECT);
@@ -190,7 +190,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @return tx_dbal_sql_tree_SelectExpr
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
-	private function parseSelectExpr() {
+	protected function parseSelectExpr() {
 		$table = null;
 		if ($this->token == self::T_IDENTIFIER) {
 			$name = $this->chars;
@@ -236,7 +236,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @return tx_dbal_sql_tree_TableReference
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/join.html
 	 */
-	private function parseTableReference() {
+	protected function parseTableReference() {
 		return null;
 	}
 }
