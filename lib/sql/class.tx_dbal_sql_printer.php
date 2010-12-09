@@ -171,8 +171,16 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 */
 	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree) {
 		$this->output($tree->left);
-		$this->output($tree->comparisonOperator);
+		$this->output(' comparisonOperator(')->output($tree->comparisonOperator)->output(') ');
 		$this->output($tree->right);
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_CombinedIdentifier $tree
+	 * @return void
+	 */
+	public function caseCombinedIdentifier(tx_dbal_sql_tree_CombinedIdentifier $tree) {
+		$this->output($tree->left)->output('.')->output($tree->right);
 	}
 
 	/**
@@ -217,6 +225,12 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 		$this->output('FROM')->indent()->outputNewLine();
 		$this->output($tree->tableReferences);
 		$this->unindent()->outputNewLine();
+
+		if ($tree->whereCondition) {
+			$this->output('WHERE')->indent()->outputNewLine();
+			$this->output($tree->whereCondition);
+			$this->unindent()->outputNewLine();
+		}
 	}
 
 	/**

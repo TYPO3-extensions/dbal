@@ -17,6 +17,7 @@ return array(
 	'tx_dbal_sql_tree_abstractexpr' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_abstractexpr.php',
 	'tx_dbal_sql_tree_bad' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_bad.php',
 	'tx_dbal_sql_tree_booleanprimary' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_booleanprimary.php',
+	'tx_dbal_sql_tree_combinedidentifier' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_combinedidentifier.php',
 	'tx_dbal_sql_tree_identifier' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_identifier.php',
 	'tx_dbal_sql_tree_intliteral' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_intliteral.php',
 	'tx_dbal_sql_tree_operation' => $extensionPath . 'lib/sql/tree/class.tx_dbal_sql_tree_operation.php',

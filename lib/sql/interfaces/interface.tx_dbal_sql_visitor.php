@@ -41,6 +41,7 @@ interface tx_dbal_sql_Visitor {
 
 	public function caseBad(tx_dbal_sql_tree_Bad $tree);
 	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree);
+	public function caseCombinedIdentifier(tx_dbal_sql_tree_CombinedIdentifier $tree);
 	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
 	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
 	public function caseOperation(tx_dbal_sql_tree_Operation $tree);

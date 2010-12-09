@@ -215,7 +215,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			$this->accept(self::T_LIMIT);
 		}
 
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpressions, $tableReferences, null);
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpressions, $tableReferences, $whereCondition);
 	}
 
 	/**
@@ -494,7 +494,17 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			case self::T_IDENTIFIER:
 				$name = $this->chars;
 				$this->accept(self::T_IDENTIFIER);
-				return t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+				$tableOrField = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+				$table = null;
+
+				if ($this->token == self::T_DOT) {
+					$table = $tableOrField;
+					$this->accept(self::T_DOT);
+					$name = $this->chars;
+					$this->accept(self::T_IDENTIFIER);
+					$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+				}
+				return $table ? t3lib_div::makeInstance('tx_dbal_sql_tree_CombinedIdentifier', $this->start, $table, $field) : $tableOrField;
 			case self::T_PLUS:
 			case self::T_MINUS:
 			case self::T_TILDE:
