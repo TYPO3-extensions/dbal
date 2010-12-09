@@ -196,7 +196,9 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 		$this->output('SELECT')->indent()->outputNewLine();
 		$this->output($tree->selectExpr);
 		$this->unindent()->outputNewLine();
-		$this->output('FROM');
+		$this->output('FROM')->indent()->outputNewLine();
+		$this->output($tree->tableReferences);
+		$this->unindent()->outputNewLine();
 	}
 
 	/**

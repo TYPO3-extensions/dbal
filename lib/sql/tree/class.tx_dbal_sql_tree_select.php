@@ -62,7 +62,7 @@ class tx_dbal_sql_tree_Select extends tx_dbal_sql_AbstractTree {
 	 * @param tx_dbal_sql_tree_TableReference[] $tableReferences
 	 * @param tx_dbal_sql_tree_WhereCondition $whereCondition
 	 */
-	public function __construct($pos, array $selectExpr, $tableReferences, /* tx_dbal_sql_tree_WhereCondition */ $whereCondition) {
+	public function __construct($pos, array $selectExpr, array $tableReferences, /* tx_dbal_sql_tree_WhereCondition */ $whereCondition) {
 		parent::__construct($pos);
 
 		$this->selectExpr = $selectExpr;

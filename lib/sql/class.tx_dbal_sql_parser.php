@@ -167,17 +167,19 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	private function parseSelect() {
-		//return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
+		$selectExpressions = array();
+		$tableReferences = array();
 		$this->accept(self::T_SELECT);
-		$selectExpr = array();
 		do {
-			$selectExpr[] = $this->parseSelectExpr();
+			$selectExpressions[] = $this->parseSelectExpr();
 		} while ($this->acceptIf(self::T_COMMA));
 		$this->accept(self::T_FROM);
-		$this->accept(self::T_IDENTIFIER);
+		do {
+			$tableReferences[] = $this->parseTableReference();
+		} while ($this->acceptIf(self::T_COMMA));
 		//$this->accept(self::T_WHERE);
 
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpr, null, null);
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpressions, $tableReferences, null);
 	}
 
 	/**
@@ -186,6 +188,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * select_expr := [identifier "."] {identifier ["AS"] [identifier] | "*"}
 	 *
 	 * @return tx_dbal_sql_tree_SelectExpr
+	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	private function parseSelectExpr() {
 		$table = null;
@@ -223,6 +226,18 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		}
 
 		return t3lib_div::makeInstance('tx_dbal_sql_tree_SelectExpr', $this->start, $table, $field, $alias);
+	}
+
+	/**
+	 * Parses a table_reference.
+	 *
+	 * table_reference := table_factor | join_table
+	 *
+	 * @return tx_dbal_sql_tree_TableReference
+	 * @see http://dev.mysql.com/doc/refman/5.5/en/join.html
+	 */
+	private function parseTableReference() {
+		return null;
 	}
 }
 
