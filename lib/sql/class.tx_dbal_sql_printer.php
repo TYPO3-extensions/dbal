@@ -1,0 +1,191 @@
+<?php
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2010 Xavier Perseguers <typo3@perseguers.ch>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/interface.tx_dbal_sql_visitor.php');
+
+/**
+ * Implementation of the Visitor design pattern.
+ *
+ * The whole parser is based on compilation course (LAMP) I attended at
+ * Swiss Federal Institute of Technology. Nice to use that again ;-)
+ * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
+ *
+ * @category    Parser
+ * @package     TYPO3
+ * @subpackage  tx_dbal\sql
+ * @author      Xavier Perseguers <typo3@perseguers.ch>
+ * @copyright   Copyright 2010
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ * @version     SVN: $Id$
+ */
+class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
+
+	/**
+	 * @var string
+	 */
+	private $buffer;
+
+	/**
+	 * Indent step
+	 * @var string
+	 */
+    private $step;
+
+    /**
+	 * Indent level
+	 * @var integer
+	 */
+    private $level;
+
+	/**
+	 * Default constructor
+	 */
+	public function __construct() {
+		$this->buffer = '';
+		$this->step = '  ';
+        $this->level = 0;
+	}
+
+	/**
+	 * Outputs an object (tree, array of trees, string, ...).
+	 *
+	 * @param mixed $obj
+	 * @return tx_dbal_sql_Visitor
+	 */
+	public function output($obj) {
+		switch (TRUE) {
+			case is_a($obj, tx_dbal_sql_AbstractTree):
+				$obj->apply($this);
+				break;
+			case is_array($obj):
+				foreach ($obj as $tree) {
+					$this->output($tree);
+				}
+				break;
+			default:
+				$this->buffer .= (string)$obj;
+		}
+		return $this;
+	}
+
+	/**
+	 * Returns the internal buffer and flushes it.
+	 *
+	 * @return string
+	 */
+	public function flush() {
+		$content = $this->buffer;
+		$this->buffer = '';
+		return $content;
+	}
+
+	/**
+	 * Outputs a new line and indents the next one.
+	 *
+	 * @return tx_dbal_sql_Visitor
+	 */
+    public function outputNewLine() {
+        $this->buffer .= "\n";
+		$this->buffer .= str_pad($this->level, $this->step);
+
+        return $this;
+    }
+
+	/**
+	 * Increments the indent level.
+	 *
+	 * @return tx_dbal_sql_Visitor
+	 */
+    public function indent() {
+        $this->level++;
+        return $this;
+    }
+
+    /**
+	 * Decrements the indent level.
+	 *
+	 * @return tx_dbal_sql_Visitor
+	 */
+    public function unindent() {
+        $this->level--;
+        return $this;
+    }
+
+	/************************************
+	 *
+	 * Implementation of the Visitor methods
+	 *
+	 ************************************/
+
+	/**
+	 * @param tx_dbal_sql_Bad $tree
+	 * @return void
+	 */
+	public function caseBad(tx_dbal_sql_tree_Bad $tree) {
+        $this->output('<<bad>>');
+    }
+
+	/**
+	 * @param tx_dbal_sql_tree_Identifier $obj
+	 * @return void
+	 */
+	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree) {
+
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_IntLiteral $obj
+	 * @return void
+	 */
+	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree) {
+
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_Operation $obj
+	 * @return void
+	 */
+	public function caseOperation(tx_dbal_sql_tree_Operation $tree) {
+
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_Select $obj
+	 * @return void
+	 */
+	public function caseSelect(tx_dbal_sql_tree_Select $tree) {
+		$this->output('SELECT');
+	}
+}
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/class.tx_dbal_sql_printer.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/class.tx_dbal_sql_printer.php']);
+}
+
+?>

@@ -52,7 +52,11 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 */
 	protected function error($expected) {
 		if (is_integer($expected)) {
-			throw t3lib_div::makeInstance('tx_dbal_sql_error_TokenExpected', $this->tokenClass($expected));
+			$exception = t3lib_div::makeInstance('tx_dbal_sql_error_TokenExpected', $this->tokenClass($expected));
+			/**
+			 * @var tx_dbal_sql_error_TokenExpected $exception
+			 */
+			throw $exception;
 		} else {
 			$message = 'Invalid syntax. Expected: ' . $expected . ', found: lexeme ' . $this->representation();
 			throw new Exception($message);
@@ -95,53 +99,54 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * @return tx_dbal_sql_AbstractTree
 	 */
 	public function parse() {
-		return $this->parseSql();
+		return $this->parseSqlScript();
 	}
 
 	/**
 	 * Returns the syntactic tree built from SQL input stream.
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return tx_dbal_sql_AbstractTree[]
 	 */
-	private function parseSql() {
+	private function parseSqlScript() {
+		$sqlScript = array();
 		switch ($this->token) {
 			case self::T_SELECT:
-				$this->parseSelect();
+				$sqlScript[] = $this->parseSelect();
 				break;
 			case self::T_UPDATE:
-				$this->parseUpdate();
+				$sqlScript[] = $this->parseUpdate();
 				break;
 			case self::T_INSERT:
-				$this->parseInsert();
+				$sqlScript[] = $this->parseInsert();
 				break;
 			case self::T_DELETE:
-				$this->parseDelete();
+				$sqlScript[] = $this->parseDelete();
 				break;
 			case self::T_EXPLAIN:
-				$this->parseExplain();
+				$sqlScript[] = $this->parseExplain();
 				break;
 			case self::T_DROP:
-				$this->parseDropTable();
+				$sqlScript[] = $this->parseDropTable();
 				break;
 			case self::T_ALTER:
-				$this->parseAlterTable();
+				$sqlScript[] = $this->parseAlterTable();
 				break;
 			case self::T_CREATE:
 				$this->accept(self::T_CREATE);
 				if ($this->token == self::T_TABLE) {
-					$this->parseCreateTable();
+					$sqlScript[] = $this->parseCreateTable();
 				} else {
-					$this->parseCreateDatabase();
+					$sqlScript[] = $this->parseCreateDatabase();
 				}
 				break;
 			case self::T_TRUNCATE:
-				$this->parseTruncate();
+				$sqlScript[] = $this->parseTruncate();
 				break;
 			default:
 				$this->error('Cannot parse SQL');
 		}
-		$this->accept(self::EOF);
-		return null;
+		//$this->accept(self::EOF);
+		return $sqlScript;
 	}
 
 	/**
@@ -158,19 +163,21 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * 		["LIMIT" [offset,] row_count]
 	 *
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return tx_dbal_sql_tree_Select
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	private function parseSelect() {
 		$this->accept(self::T_SELECT);
 		do {
-			if ($this->token == self::T_IDENT || $this->token == self::T_STAR) {
+			if ($this->token == self::T_IDENTIFIER || $this->token == self::T_STAR) {
 				$this->accept($this->token);
 			}
 		} while ($this->acceptIf(self::T_COMMA));
 		$this->accept(self::T_FROM);
-		$this->accept(self::T_IDENT);
-		$this->accept(self::T_WHERE);
+		$this->accept(self::T_IDENTIFIER);
+		//$this->accept(self::T_WHERE);
+
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, array(), null, null);
 	}
 }
 

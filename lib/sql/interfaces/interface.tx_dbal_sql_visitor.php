@@ -39,11 +39,11 @@
  */
 interface tx_dbal_sql_Visitor {
 
-	public function caseBad(tx_dbal_sql_tree_Bad $obj);
-	//public function caseSelect(tx_dbal_sql_tree_Select $obj);
-	public function caseIdentifier(tx_dbal_sql_tree_Identifier $obj);
-	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $obj);
-	public function caseOperation(tx_dbal_sql_tree_Operation $obj);
+	public function caseBad(tx_dbal_sql_tree_Bad $tree);
+	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
+	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
+	public function caseOperation(tx_dbal_sql_tree_Operation $tree);
+	public function caseSelect(tx_dbal_sql_tree_Select $tree);
 
 }
 

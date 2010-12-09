@@ -45,7 +45,7 @@ class tx_dbal_sql_error_TokenExpected extends t3lib_exception {
 	 * @param string $class
 	 */
 	public function __construct($class) {
-		parent::__construct('Expected token from class ' . $class);
+		parent::__construct('Expected token from class ' . (int)$class);
 	}
 
 }

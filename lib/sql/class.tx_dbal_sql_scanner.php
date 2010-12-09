@@ -1054,7 +1054,11 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			case self::T_ZEROFILL                      : return 'ZEROFILL';
 
 			default:
-				throw t3lib_div::makeInstance('tx_dbal_sql_error_UnknownToken', $token);
+				$exception = t3lib_div::makeInstance('tx_dbal_sql_error_UnknownToken', $token);
+				/**
+				 * @var tx_dbal_sql_error_UnknownToken $exception
+				 */
+				throw $exception;
 		}
 	}
 
