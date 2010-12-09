@@ -169,6 +169,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	protected function parseSelect() {
 		$selectExpressions = array();
 		$tableReferences = array();
+		$whereCondition = null;
 
 		// "SELECT"
 		$this->accept(self::T_SELECT);
@@ -189,6 +190,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		// "WHERE"
 		if ($this->token == self::T_WHERE) {
 			$this->accept(self::T_WHERE);
+			$whereCondition = $this->parseWhereCondition();
 		}
 
 		// "GROUP" "BY"
@@ -297,6 +299,122 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		}
 
 		return t3lib_div::makeInstance('tx_dbal_sql_tree_TableFactor', $this->start, $tableName, $alias);
+	}
+
+	/**
+	 * Parses a where_condition.
+	 *
+	 * where_condition := expr
+	 *
+	 * @return tx_dbal_sql_tree_Expr
+	 * @see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 */
+	protected function parseWhereCondition() {
+		return $this->parseExpr();
+	}
+
+	/**
+	 * Parses an expr.
+	 *
+	 * expr :=
+	 *         expr "OR" expr
+	 *         | expr "||" expr
+	 *         | expr "XOR" expr
+	 *         | expr "AND" expr
+	 *         | expr "&&" expr
+	 *         | "NOT" expr
+	 *         | "!" expr
+	 *         | boolean_primary "IS" ["NOT"] {TRUE | FALSE | UNKNOWN}
+	 *         | boolean_primary
+	 *
+	 * @return tx_dbal_sql_tree_AbstractExpr
+	 * @see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 */
+	protected function parseExpr() {
+		if ($this->token == self::T_NOT || $this->token == self::T_LOGICNOT) {
+			$this->accept($this->token);
+			return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprNot', $this->start, $this->parseExpr());
+		} else {
+			$expr = t3lib_div::makeInstance('tx_dbal_sql_tree_ExprBooleanPrimary', $this->parseBooleanPrimary());
+			/*
+			if ($this->token == self::T_IS) {
+				$this->accept(self::T_IS);
+				$this->acceptIf(self::T_NOT);
+				$this->parseExpr();
+			}
+			*/
+			switch ($this->token) {
+				case self::T_OR:        // 'OR'
+				case self::T_LOGICOR:   // '||'
+					$this->accept($this->token);
+					return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprOr', $this->start, $expr, $this->parseExpr());
+				case self::T_AND:       // 'AND'
+				case self::T_LOGICAND:  // '&&'
+					$this->accept($this->token);
+					return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprAnd', $this->start, $expr, $this->parseExpr());
+				case self::T_XOR:       // 'XOR'
+					$this->accept(self::T_XOR);
+					return t3lib_div::makeInstance('tx_dbal_sql_tree_ExprXor', $this->start, $expr, $this->parseExpr());
+			}
+
+			return $expr;
+		}
+	}
+
+	/**
+	 * Parses a boolean_primary.
+	 *
+	 * boolean_primary :=
+	 *                    boolean_primary "IS" ["NOT"] "NULL"
+	 *                    | boolean_primary comparison_operator predicate
+	 *                    | boolean_primary comparison_operator {"ALL" | "ANY"} (subquery)
+	 *                    | predicate
+	 *
+	 *
+	 * comparison_operator := "=" | ">=" | ">" | "<=" | "<" | "<>" | "!="
+	 *
+	 *
+	 * predicate :=
+	 *              bit_expr ["NOT"] "IN" "(" subquery ")"
+	 *              | bit_expr ["NOT"] "IN" "(" expr ["," expr] ... ")"
+	 *              | bit_expr ["NOT"] "BETWEEN" bit_expr "AND" bit_expr
+	 *              | bit_expr ["NOT"] "LIKE" simple_expr
+	 *              | bit_expr
+	 *
+	 *
+	 * bit_expr :=
+	 *              bit_expr "|" bit_expr
+	 *              | bit_expr "&" bit_expr
+	 *              | bit_expr "+" bit_expr
+	 *              | bit_expr "-" bit_expr
+	 *              | bit_expr "*" bit_expr
+	 *              | bit_expr "/" bit_expr
+	 *              | bit_expr "DIV" bit_expr
+	 *              | bit_expr "MOD" bit_expr
+	 *              | bit_expr "%" bit_expr
+	 *              | bit_expr "^" bit_expr
+	 *              | simple_expr
+	 *
+	 *
+	 * simple_expr :=
+	 *                literal
+	 *                | identifier
+	 *                | function_call
+	 *                | "+" simple_expr
+	 *                | "-" simple_expr
+	 *                | "~" simple_expr
+	 *                | "!" simple_expr
+	 *                | "BINARY" simple_expr
+	 *                | "(" expr ")"
+	 *                | "(" subquery ")"
+	 *                | "EXISTS" "(" subquery ")"
+	 *                | case_expr
+	 *
+	 * @return tx_dbal_sql_tree_AbstractExpr
+	 * @see http://dev.mysql.com/doc/refman/5.5/en/expressions.html
+	 */
+	protected function parseBooleanPrimary() {
+		// TODO
 	}
 }
 

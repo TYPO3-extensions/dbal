@@ -166,6 +166,59 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	}
 
 	/**
+	 * @param tx_dbal_sql_tree_ExprAnd $tree
+	 * @return void
+	 */
+	public function caseExprAnd(tx_dbal_sql_tree_ExprAnd $tree) {
+		$this->output('(')->indent()->outputNewLine();
+		$this->output($tree->left);
+		$this->unindent()->outputNewLine();
+		$this->output('AND');
+		$this->indent()->outputNewLine();
+		$this->output($tree->right);
+		$this->unindent()->outputNewLine();
+		$this->output(')');
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_ExprNot $tree
+	 * @return void
+	 */
+	public function caseExprNot(tx_dbal_sql_tree_ExprNot $tree) {
+		$this->output('NOT ')->output($tree->left);
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_ExprOr $tree
+	 * @return void
+	 */
+	public function caseExprOr(tx_dbal_sql_tree_ExprOr $tree) {
+		$this->output('(')->indent()->outputNewLine();
+		$this->output($tree->left);
+		$this->unindent()->outputNewLine();
+		$this->output('OR');
+		$this->indent()->outputNewLine();
+		$this->output($tree->right);
+		$this->unindent()->outputNewLine();
+		$this->output(')');
+	}
+
+	/**
+	 * @param tx_dbal_sql_tree_ExprXor $tree
+	 * @return void
+	 */
+	public function caseExprXor(tx_dbal_sql_tree_ExprXor $tree) {
+		$this->output('(')->indent()->outputNewLine();
+		$this->output($tree->left);
+		$this->unindent()->outputNewLine();
+		$this->output('XOR');
+		$this->indent()->outputNewLine();
+		$this->output($tree->right);
+		$this->unindent()->outputNewLine();
+		$this->output(')');
+	}
+
+	/**
 	 * @param tx_dbal_sql_tree_Identifier $obj
 	 * @return void
 	 */
