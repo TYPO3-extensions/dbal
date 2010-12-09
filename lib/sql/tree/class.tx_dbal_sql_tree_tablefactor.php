@@ -27,27 +27,57 @@
 
 
 /**
- * This interface provides method for the visitor design pattern.
+ * A table_factor tree.
  *
- * @category    Interfaces
+ * @category    Tree
  * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @subpackage  tx_dbal\sql\tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface tx_dbal_sql_Visitor {
+class tx_dbal_sql_tree_TableFactor extends tx_dbal_sql_AbstractTree {
 
-	public function caseBad(tx_dbal_sql_tree_Bad $tree);
-	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
-	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
-	public function caseOperation(tx_dbal_sql_tree_Operation $tree);
-	public function caseSelect(tx_dbal_sql_tree_Select $tree);
-	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree);
-	public function caseStar(tx_dbal_sql_tree_Star $tree);
-	public function caseTableFactor(tx_dbal_sql_tree_TableFactor $tree);
+	/**
+	 * @var tx_dbal_sql_tree_Identifier
+	 */
+	public $tableName;
 
+	/**
+	 * @var tx_dbal_sql_tree_Identifier
+	 */
+	public $alias;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param tx_dbal_sql_tree_Identifier $tableName
+	 * @param tx_dbal_sql_tree_Identifier $alias
+	 */
+	public function __construct($pos, tx_dbal_sql_tree_Identifier $tableName, /* tx_dbal_sql_tree_Identifier */ $alias = null) {
+		parent::__construct($pos);
+
+		$this->tableName = $tableName;
+		$this->alias = $alias;
+	}
+
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param tx_dbal_sql_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(tx_dbal_sql_Visitor $visitor) {
+		$visitor->caseTableFactor($this);
+	}
+
+}
+
+
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_tablefactor.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_tablefactor.php']);
 }
 
 ?>

@@ -222,6 +222,17 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	public function caseStar(tx_dbal_sql_tree_Star $tree) {
 		$this->output('*');
 	}
+
+	/**
+	 * @param tx_dbal_sql_tree_TableFactor $tree
+	 * @return void
+	 */
+	public function caseTableFactor(tx_dbal_sql_tree_TableFactor $tree) {
+		$this->output($tree->tableName);
+		if ($tree->alias) {
+			$this->output(' AS ')->output($tree->alias);
+		}
+	}
 }
 
 

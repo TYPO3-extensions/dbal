@@ -265,13 +265,38 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	/**
 	 * Parses a table_reference.
 	 *
-	 * table_reference := table_factor | join_table
+	 * table_reference := table_factor
+	 *                    | join_table
 	 *
 	 * @return tx_dbal_sql_tree_TableReference
 	 * @see http://dev.mysql.com/doc/refman/5.5/en/join.html
 	 */
 	protected function parseTableReference() {
-		return null;
+		return $this->parseTableFactor();
+	}
+
+	/**
+	 * Parses a table_factor.
+	 *
+	 * table_factor := identifier [["AS"] identifier]
+	 *
+	 * @return tx_dbal_sql_tree_TableFactor
+	 * @see http://dev.mysql.com/doc/refman/5.5/en/join.html
+	 */
+	protected function parseTableFactor() {
+		$name = $this->chars;
+		$this->accept(self::T_IDENTIFIER);
+		$tableName = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+		$alias = null;
+
+		if ($this->token == self::T_AS || $this->token == self::T_IDENTIFIER) {
+			$this->acceptIf(self::T_AS);
+			$name = $this->chars;
+			$this->accept(self::T_IDENTIFIER);
+			$alias = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+		}
+
+		return t3lib_div::makeInstance('tx_dbal_sql_tree_TableFactor', $this->start, $tableName, $alias);
 	}
 }
 
