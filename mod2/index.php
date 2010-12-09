@@ -89,12 +89,13 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		$scanner = t3lib_div::makeInstance('tx_dbal_sql_Scanner', $global, $inputStream);
 		/* @var tx_dbal_sql_Scanner $scanner */
 
-		$content = '';
+		$content = '<div class="scanner">';
 		$i = 0;
 		while ($scanner->token != self::EOF && $i++ < 30) {
 			$content .= $scanner->representation() . "<br />\n";
 			$scanner->nextToken();
 		}
+		$content .= '</div>';
 
 		$this->content .= $this->doc->section('Scanner', $content);
 
@@ -119,7 +120,9 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		$printer = t3lib_div::makeInstance('tx_dbal_sql_Printer');
 		/* @var tx_dbal_sql_Printer $printer */
 
-		$content = $printer->outputStatements($parser->parse())->flush();
+		$content = '<div class="printer">';
+		$content .= $printer->outputStatements($parser->parse())->flush();
+		$content .= '</div>';
 
 		$this->content .= $this->doc->section('Printer', $content);
 

@@ -67,7 +67,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 */
 	public function __construct() {
 		$this->buffer = '';
-		$this->step = '  ';
+		$this->step = '&nbsp;&nbsp;&nbsp;&nbsp;';
         $this->level = 0;
 	}
 
@@ -84,13 +84,12 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 				break;
 			case is_array($obj):
 				for ($i = 0; $i < count($obj) - 1; $i++) {
-					$this->output($obj[$i]);
-					$this->output(', ');
+					$this->output($obj[$i])->output(', ');
 				}
 				$this->output($obj[count($obj) - 1]);
 				break;
 			default:
-				$this->buffer .= (string)$obj;
+				$this->buffer .= (string) $obj;
 		}
 		return $this;
 	}
@@ -103,8 +102,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 */
 	public function outputStatements(array $trees) {
 		foreach ($trees as $tree) {
-			$this->output($tree);
-			$this->output(';');
+			$this->output($tree)->output(';');
 		}
 		return $this;
 	}
@@ -126,8 +124,10 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return tx_dbal_sql_Visitor
 	 */
     public function outputNewLine() {
-        $this->buffer .= "\n";
-		$this->buffer .= str_pad($this->level, $this->step);
+        $this->buffer .= "<br />\n";
+		for ($i = 0; $i < $this->level; $i++) {	// str_pad does not work as expected
+			$this->buffer .= $this->step;
+		}
 
         return $this;
     }
@@ -195,9 +195,10 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * @return void
 	 */
 	public function caseSelect(tx_dbal_sql_tree_Select $tree) {
-		$this->output('SELECT ');
+		$this->output('SELECT')->indent()->outputNewLine();
 		$this->output($tree->selectExpr);
-		$this->output(' FROM ');
+		$this->unindent()->outputNewLine();
+		$this->output('FROM');
 	}
 
 	/**
@@ -206,13 +207,11 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 */
 	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree) {
 		if ($tree->table) {
-			$this->output($tree->table);
-			$this->output('.');
+			$this->output($tree->table)->output('.');
 		}
 		$this->output($tree->field);
 		if ($tree->alias) {
-			$this->output(' AS ');
-			$this->output($tree->alias);
+			$this->output(' AS ')->output($tree->alias);
 		}
 	}
 
