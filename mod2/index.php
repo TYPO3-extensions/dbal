@@ -90,8 +90,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		/* @var tx_dbal_sql_Scanner $scanner */
 
 		$content = '<div class="scanner">';
-		$i = 0;
-		while ($scanner->token != self::EOF && $i++ < 30) {
+		while ($scanner->token != self::EOF) {
 			$content .= $scanner->representation() . "<br />\n";
 			$scanner->nextToken();
 		}
