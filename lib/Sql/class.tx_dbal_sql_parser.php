@@ -69,7 +69,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 */
 	protected function error($expected) {
 		if (is_integer($expected)) {
-			throw new TokenExpectedException($this->tokenClass($expected));
+			throw new Sql_Exceptions_TokenExpected($this->tokenClass($expected));
 		} else {
 			$message = 'Invalid syntax. Expected: ' . $expected . ', found: lexeme ' . $this->representation();
 			throw new Exception($message);
@@ -467,7 +467,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		while (in_array($this->token, $operators)) {
 			$operator = $this->token;
 			// TODO: take priority of operators into account
-			$simpleExpr = new tx_dbal_sql_tree_Operation($operator, $simpleExpr, $this->parseBitExpr());
+			$simpleExpr = new tx_dbal_sql_tree_Operation($operator, $simpleExpr, $this->parseBitExpr(), null);
 		}
 
 		return $simpleExpr;

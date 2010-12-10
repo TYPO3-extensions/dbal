@@ -25,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(dirname(__FILE__) . '/Interfaces/VisitorInterface.php');
+require_once(dirname(__FILE__) . '/Interfaces/Visitor.php');
 
 /**
  * Implementation of the Visitor design pattern.
@@ -42,7 +42,7 @@ require_once(dirname(__FILE__) . '/Interfaces/VisitorInterface.php');
  * @license	 http://www.gnu.org/copyleft/gpl.html
  * @version	 SVN: $Id$
  */
-class tx_dbal_sql_Printer implements VisitorInterface {
+class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 
 	/**
 	 * @var string

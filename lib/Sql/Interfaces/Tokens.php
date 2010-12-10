@@ -37,7 +37,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface TokensInterface {
+interface Sql_Interfaces_Tokens {
 
 	const EOF                             =  -1; // end of file
 	const BAD                             =   0; // unknown lexeme

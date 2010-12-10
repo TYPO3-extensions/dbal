@@ -25,13 +25,13 @@
 
 $BE_USER->modAccess($MCONF, 1);
 
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Interfaces/TokensInterface.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Interfaces/Tokens.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_global.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/System/Io/StringReader.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_parser.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_printer.php');
 
-class tx_dbal_module2 extends t3lib_SCbase implements TokensInterface {
+class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
 	/**
 	 * @var string

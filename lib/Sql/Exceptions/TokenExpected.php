@@ -37,7 +37,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class TokenExpectedException extends Exception {
+class Sql_Exceptions_TokenExpected extends Exception {
 
 	/**
 	 * Default constructor.

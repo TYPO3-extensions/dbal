@@ -66,18 +66,13 @@ class tx_dbal_sql_tree_TableFactor extends tx_dbal_sql_AbstractTree {
 	/**
 	 * Applies the visitor onto this class.
 	 *
-	 * @param VisitorInterface $visitor
+	 * @param Sql_Interfaces_Visitor $visitor
 	 * @return void
 	 */
-	public function apply(VisitorInterface $visitor) {
+	public function apply(Sql_Interfaces_Visitor $visitor) {
 		$visitor->caseTableFactor($this);
 	}
 
-}
-
-
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_tablefactor.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/tree/class.tx_dbal_sql_tree_tablefactor.php']);
 }
 
 ?>

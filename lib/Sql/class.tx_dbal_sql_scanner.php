@@ -25,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(dirname(__FILE__) . '/Interfaces/TokensInterface.php');
+require_once(dirname(__FILE__) . '/Interfaces/Tokens.php');
 require_once(dirname(__FILE__) . '/class.tx_dbal_sql_position.php');
 
 /**
@@ -43,7 +43,7 @@ require_once(dirname(__FILE__) . '/class.tx_dbal_sql_position.php');
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_Scanner implements TokensInterface {
+class tx_dbal_sql_Scanner implements Sql_Interfaces_Tokens {
 
 	/**
 	 * Current lexeme
