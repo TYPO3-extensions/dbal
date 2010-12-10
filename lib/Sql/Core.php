@@ -30,7 +30,7 @@ require_once(dirname(__FILE__) . '/Exceptions/UnknownToken.php');
 require_once(dirname(__FILE__) . '/Parser.php');
 require_once(dirname(__FILE__) . '/Functions/AbstractFunction.php');
 
-// Registers MySQL functions for the parser
+// Register MySQL functions for the parser
 
 require_once(dirname(__FILE__) . '/Functions/Concat.php');
 Sql_Scanner::addFunction('CONCAT', 'Sql_Functions_Concat');
