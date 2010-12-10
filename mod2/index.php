@@ -25,11 +25,11 @@
 
 $BE_USER->modAccess($MCONF, 1);
 
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/TokensInterface.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_global.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/system/io/StringReader.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_parser.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_printer.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Interfaces/TokensInterface.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_global.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/System/Io/StringReader.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_parser.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_printer.php');
 
 class tx_dbal_module2 extends t3lib_SCbase implements TokensInterface {
 

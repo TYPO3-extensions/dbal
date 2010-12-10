@@ -25,6 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(dirname(__FILE__) . '/Interfaces/TokensInterface.php');
 require_once(dirname(__FILE__) . '/class.tx_dbal_sql_position.php');
 
 /**

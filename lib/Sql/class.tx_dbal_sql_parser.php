@@ -28,20 +28,20 @@
 require_once(dirname(__FILE__) . '/class.tx_dbal_sql_scanner.php');
 
 require_once(dirname(__FILE__) . '/class.tx_dbal_sql_abstracttree.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_abstractexpr.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_abstractexpr.php');
 
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_bad.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_booleanprimary.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_combinedidentifier.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_identifier.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_intliteral.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_operation.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_select.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_selectexpr.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_simpleexpr.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_star.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_stringliteral.php');
-require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_tablefactor.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_bad.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_booleanprimary.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_combinedidentifier.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_identifier.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_intliteral.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_operation.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_select.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_selectexpr.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_simpleexpr.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_star.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_stringliteral.php');
+require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_tablefactor.php');
 
 /**
  * Parser ("syntactic analyzer") of the SQL language.

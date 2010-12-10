@@ -25,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(dirname(__FILE__) . '/interfaces/VisitorInterface.php');
+require_once(dirname(__FILE__) . '/Interfaces/VisitorInterface.php');
 
 /**
  * Implementation of the Visitor design pattern.
