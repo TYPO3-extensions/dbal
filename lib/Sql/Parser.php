@@ -542,12 +542,18 @@ class Sql_Parser extends Sql_Scanner {
 				break;
 			default:
 				if ($this->token > self::OFFSET_FUNCTIONS) {
-					$functionName = $this->tokenClass($this->token);
+					$functionName = self::$functions[$this->token]['name'];
+					$functionTree = new Sql_Tree_Function($this->start, $functionName);
+
+					$functionParser = /* Sql_Functions_AbstractFunction */ self::$functions[$this->token]['class'];
+
 					$this->accept($this->token);
 					$this->accept(self::T_LPAREN);
-					// TODO
-					//$this->accept(self::T_RPAREN);
-					return new Sql_Tree_Function($this->start, $functionName);
+
+					$functionParser::parseArguments($this, $functionTree);
+
+					$this->accept(self::T_RPAREN);
+					return $functionTree;
 				}
 		}
 	}

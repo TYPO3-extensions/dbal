@@ -189,7 +189,7 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	public function caseFunction(Sql_Tree_Function $tree) {
 		$this->output($tree->functionName);
 		$this->output('(')->indent()->outputNewLine();
-		$this->output('--- TODO ---');
+		$this->output($tree->arguments);
 		$this->unindent()->outputNewLine();
 		$this->output(')');
 	}

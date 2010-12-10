@@ -66,7 +66,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$this->content .= $this->doc->spacer(5);
 
 		$sql = 'SELECT sys_refindex.*, tx_dam_file_tracking.* FROM sys_refindex, tx_dam_file_tracking WHERE sys_refindex.tablename = \'tx_dam_file_tracking\''
-			. ' AND sys_refindex.ref_string = CONCAT(tx_dam_file_tracking.file_path, tx_dam_file_tracking.file_name)';
+			. ' AND sys_refindex.ref_string = CONCAT(file_path, file_name)';
 
 		//$sql = 'SELECT * FROM tt_content WHERE pid = 32';
 

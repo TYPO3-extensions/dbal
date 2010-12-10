@@ -25,13 +25,17 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(dirname(__FILE__) . '/Parser.php');
 require_once(dirname(__FILE__) . '/Exceptions/TokenExpected.php');
 require_once(dirname(__FILE__) . '/Exceptions/UnknownToken.php');
+require_once(dirname(__FILE__) . '/Parser.php');
+require_once(dirname(__FILE__) . '/Functions/AbstractFunction.php');
 
 // Registers MySQL functions for the parser
 
-Sql_Scanner::addFunction('CONCAT');
-Sql_Scanner::addFunction('FIND_IN_SET');
+require_once(dirname(__FILE__) . '/Functions/Concat.php');
+Sql_Scanner::addFunction('CONCAT', 'Sql_Functions_Concat');
+
+require_once(dirname(__FILE__) . '/Functions/FindInSet.php');
+Sql_Scanner::addFunction('FIND_IN_SET', 'Sql_Functions_FindInSet');
 
 ?>

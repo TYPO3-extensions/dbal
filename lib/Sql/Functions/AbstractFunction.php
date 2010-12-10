@@ -27,62 +27,30 @@
 
 
 /**
- * A function tree.
+ * Abstract class to be used for all MySQL functions.
  *
- * @category    Tree
+ * Remark: this abstract class extends Sql_Parser to make it a friend class and thus
+ *         be granted access to protected methods and fields.
+ *
+ * @category    Functions
  * @package     SQL
- * @subpackage  Tree
+ * @subpackage  Functions
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class Sql_Tree_Function extends Sql_AbstractTree {
+abstract class Sql_Functions_AbstractFunction extends Sql_Parser {
 
 	/**
-	 * @var string
-	 */
-	public $functionName;
-
-	/**
-	 * @var Sql_AbstractTree[]
-	 */
-	public $arguments;
-
-	/**
-	 * Default constructor.
+	 * Parses the arguments of the function.
 	 *
-	 * @param integer $pos
-	 * @param string $functionName
-	 * @param Sql_AbstractTree[] $arguments
-	 */
-	public function __construct($pos, $functionName, array $arguments = array()) {
-		parent::__construct($pos);
-
-		$this->functionName = $functionName;
-		$this->arguments = $arguments;
-	}
-
-	/**
-	 * Adds an argument.
-	 *
-	 * @param Sql_AbstractTree $argument
-	 * @return Sql_Tree_Function
-	 */
-	public function addArgument(Sql_AbstractTree $argument) {
-		$this->arguments[] = $argument;
-		return $this;
-	}
-
-	/**
-	 * Applies the visitor onto this class.
-	 *
-	 * @param Sql_Interfaces_Visitor $visitor
+	 * @param Sql_Parser $parser
+	 * @param Sql_Tree_Function $function Prepared function object to be populated with arguments
 	 * @return void
+	 * @static
 	 */
-	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseFunction($this);
-	}
+	abstract public static function parseArguments(Sql_Parser $parser, Sql_Tree_Function $function);
 
 }
 

@@ -75,7 +75,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	protected $buffer;
 
 	/**
-	 * Array of function names
+	 * Array of function names and class implementations
 	 * @var array
 	 */
 	protected static $functions = array();
@@ -124,17 +124,21 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	 * Adds support for a function.
 	 *
 	 * @param string $functionName
+	 * @param string $className
 	 * @return void
 	 * @throws InvalidArgumentException
 	 * @static
 	 */
-	public static function addFunction($functionName) {
+	public static function addFunction($functionName, $className) {
 		if (isset(self::$functions[$functionName])) {
 			throw new InvalidArgumentException('Function "' . $functionName . '" is already defined', 1291994389);
 		}
 		$functionId = self::OFFSET_FUNCTIONS + count(self::$functions) + 1;
 		self::$functions[$functionName] = $functionId;
-		self::$functions[$functionId] = $functionName;
+		self::$functions[$functionId] = array(
+			'name' => $functionName,
+			'class' => $className
+		);
 	}
 
 	/**
@@ -822,7 +826,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	 */
 	public static function tokenClass($token) {
 		if ($token > self::OFFSET_FUNCTIONS && isset(self::$functions[$token])) {
-			return self::$functions[$token];
+			return self::$functions[$token]['name'];
 		}
 		switch ($token) {
 			case self::EOF                             : return '<eof>';
