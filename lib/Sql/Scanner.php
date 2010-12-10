@@ -93,10 +93,15 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	private $column = 0;
 
 	/**
-	 * Input stream
-	 * @var Sql_System_Io_StringReader
+	 * SQL Input stream
+	 * @var string
 	 */
-	private $in;
+	private $sql;
+
+	/**
+	 * @var integer
+	 */
+	private $currPos;
 
 	/**
 	 * Reserved for method {@see nextCh()}
@@ -107,12 +112,14 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	/**
 	 * Default constructor
 	 *
-	 * @param System_Io_Reader $in Input stream
+	 * @param string $sql SQL Input stream
 	 */
-	public function __construct(Sql_System_Io_StringReader $in) {
-		$this->errors = array();
-		$this->in = $in;
-		$this->buffer = '';
+	public function __construct($sql) {
+		$this->errors  = array();
+		$this->sql     = $sql;
+		$this->currPos = 0;
+		$this->buffer  = '';
+
 		$this->nextCh();
 		$this->nextToken();
 	}
@@ -1083,8 +1090,27 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 				$this->column++;
 		}
 
-		$this->ch = $this->in->read(1);
-		$this->oldCh = (($this->oldCh === "\r") && ($this->ch === "\n")) ? $this->in->read(1) : $this->ch;
+		// [start] Read next character
+		if ($this->currPos >= strlen($this->sql)) {
+			$this->ch = -1;	// EOF
+		} else {
+			$this->ch = $this->sql{$this->currPos};
+			$this->currPos++;
+		}
+		// [end] Read next character
+
+		if (($this->oldCh === "\r") && ($this->ch === "\n")) {
+			// [start] Read next character
+			if ($this->currPos >= strlen($this->sql)) {
+				$this->ch = -1;	// EOF
+			} else {
+				$this->ch = $this->sql{$this->currPos};
+				$this->currPos++;
+			}
+			// [end] Read next character
+		} else {
+			$this->oldCh = $this->ch;
+		}
 		$this->ch = ($this->oldCh === "\r") ? "\n" : $this->oldCh;
 
 		return $token;
