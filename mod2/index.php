@@ -22,13 +22,16 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * @author Xavier Perseguers <typo3@perseguers.ch>
-  */
 
 $BE_USER->modAccess($MCONF, 1);
 
-class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/TokensInterface.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_global.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/system/io/class.tx_dbal_system_io_stringreader.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_parser.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_printer.php');
+
+class tx_dbal_module2 extends t3lib_SCbase implements TokensInterface {
 
 	/**
 	 * @var string

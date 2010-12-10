@@ -25,6 +25,23 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(dirname(__FILE__) . '/class.tx_dbal_sql_scanner.php');
+
+require_once(dirname(__FILE__) . '/class.tx_dbal_sql_abstracttree.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_abstractexpr.php');
+
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_bad.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_booleanprimary.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_combinedidentifier.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_identifier.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_intliteral.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_operation.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_select.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_selectexpr.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_simpleexpr.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_star.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_stringliteral.php');
+require_once(dirname(__FILE__) . '/tree/class.tx_dbal_sql_tree_tablefactor.php');
 
 /**
  * Parser ("syntactic analyzer") of the SQL language.
@@ -52,7 +69,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 */
 	protected function error($expected) {
 		if (is_integer($expected)) {
-			throw new tx_dbal_sql_error_TokenExpected($this->tokenClass($expected));
+			throw new TokenExpectedException($this->tokenClass($expected));
 		} else {
 			$message = 'Invalid syntax. Expected: ' . $expected . ', found: lexeme ' . $this->representation();
 			throw new Exception($message);

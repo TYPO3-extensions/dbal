@@ -92,11 +92,11 @@ abstract class tx_dbal_sql_AbstractTree {
 	/**
 	 * Applies the visitor.
 	 *
-	 * @param tx_dbal_sql_Visitor $visitor
+	 * @param VisitorInterface $visitor
 	 * @return void
 	 * @abstract
 	 */
-	public abstract function apply(tx_dbal_sql_Visitor $visitor);
+	public abstract function apply(VisitorInterface $visitor);
 
 }
 

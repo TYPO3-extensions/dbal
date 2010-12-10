@@ -37,7 +37,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface tx_dbal_sql_Tokens {
+interface TokensInterface {
 
 	const EOF                             =  -1; // end of file
 	const BAD                             =   0; // unknown lexeme

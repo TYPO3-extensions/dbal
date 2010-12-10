@@ -74,10 +74,10 @@ class tx_dbal_sql_tree_Select extends tx_dbal_sql_AbstractTree {
 	/**
 	 * Applies the visitor onto this class.
 	 *
-	 * @param tx_dbal_sql_Visitor $visitor
+	 * @param VisitorInterface $visitor
 	 * @return void
 	 */
-	public function apply(tx_dbal_sql_Visitor $visitor) {
+	public function apply(VisitorInterface $visitor) {
 		$visitor->caseSelect($this);
 	}
 

@@ -62,10 +62,10 @@ class tx_dbal_sql_tree_BooleanPrimary extends tx_dbal_sql_tree_AbstractExpr {
 	/**
 	 * Applies the visitor onto this class.
 	 *
-	 * @param tx_dbal_sql_Visitor $visitor
+	 * @param VisitorInterface $visitor
 	 * @return void
 	 */
-	public function apply(tx_dbal_sql_Visitor $visitor) {
+	public function apply(VisitorInterface $visitor) {
 		$visitor->caseBooleanPrimary($this);
 	}
 

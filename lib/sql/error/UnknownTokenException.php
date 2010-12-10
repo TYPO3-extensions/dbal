@@ -37,7 +37,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_error_UnknownToken extends t3lib_exception {
+class UnknownTokenException extends t3lib_exception {
 
 	/**
 	 * Default constructor.

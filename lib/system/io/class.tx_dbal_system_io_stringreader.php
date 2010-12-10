@@ -27,6 +27,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(dirname(__FILE__) . '/class.tx_dbal_system_io_reader.php');
+
 /**
  * Dummy class for reading from string of characters.
  *

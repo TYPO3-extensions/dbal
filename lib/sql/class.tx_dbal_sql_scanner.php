@@ -25,6 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(dirname(__FILE__) . '/class.tx_dbal_sql_position.php');
 
 /**
  * Lexical analyzer.
@@ -41,7 +42,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
+class tx_dbal_sql_Scanner implements TokensInterface {
 
 	/**
 	 * Current lexeme
@@ -1060,7 +1061,7 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 			case self::T_ZEROFILL                      : return 'ZEROFILL';
 
 			default:
-				throw new tx_dbal_sql_error_UnknownToken($token);
+				throw new UnknownTokenException($token);
 		}
 	}
 

@@ -27,30 +27,26 @@
 
 
 /**
- * This interface provides method for the visitor design pattern.
+ * An exception for an expected token that was not found.
  *
- * @category    Interfaces
+ * @category    Exception
  * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @subpackage  tx_dbal\sql\error
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface tx_dbal_sql_Visitor {
+class TokenExpectedException extends t3lib_exception {
 
-	public function caseBad(tx_dbal_sql_tree_Bad $tree);
-	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree);
-	public function caseCombinedIdentifier(tx_dbal_sql_tree_CombinedIdentifier $tree);
-	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
-	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
-	public function caseOperation(tx_dbal_sql_tree_Operation $tree);
-	public function caseSelect(tx_dbal_sql_tree_Select $tree);
-	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree);
-	public function caseSimpleExpr(tx_dbal_sql_tree_SimpleExpr $tree);
-	public function caseStar(tx_dbal_sql_tree_Star $tree);
-	public function caseStringLiteral(tx_dbal_sql_tree_StringLiteral $tree);
-	public function caseTableFactor(tx_dbal_sql_tree_TableFactor $tree);
+	/**
+	 * Default constructor.
+	 *
+	 * @param string $class
+	 */
+	public function __construct($class) {
+		parent::__construct('Expected token from class ' . (int)$class);
+	}
 
 }
 

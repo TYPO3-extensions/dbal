@@ -25,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/interface.tx_dbal_sql_visitor.php');
+require_once(dirname(__FILE__) . '/interfaces/VisitorInterface.php');
 
 /**
  * Implementation of the Visitor design pattern.
@@ -42,7 +42,7 @@ require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/interface.tx_db
  * @license	 http://www.gnu.org/copyleft/gpl.html
  * @version	 SVN: $Id$
  */
-class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
+class tx_dbal_sql_Printer implements VisitorInterface {
 
 	/**
 	 * @var string
@@ -74,7 +74,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * Outputs an object (tree, array of trees, string, ...).
 	 *
 	 * @param mixed $obj
-	 * @return tx_dbal_sql_Visitor
+	 * @return VisitorInterface
 	 */
 	public function output($obj) {
 		switch (TRUE) {
@@ -97,7 +97,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	 * Outputs an array of SQL statements.
 	 *
 	 * @param tx_dbal_sql_AbstractTree[] $trees
-	 * @return tx_dbal_sql_Visitor
+	 * @return VisitorInterface
 	 */
 	public function outputStatements(array $trees) {
 		foreach ($trees as $tree) {
@@ -120,7 +120,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	/**
 	 * Outputs a new line and indents the next one.
 	 *
-	 * @return tx_dbal_sql_Visitor
+	 * @return VisitorInterface
 	 */
 	public function outputNewLine() {
 		$this->buffer .= "<br />\n";
@@ -134,7 +134,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	/**
 	 * Increments the indent level.
 	 *
-	 * @return tx_dbal_sql_Visitor
+	 * @return VisitorInterface
 	 */
 	public function indent() {
 		$this->level++;
@@ -144,7 +144,7 @@ class tx_dbal_sql_Printer implements tx_dbal_sql_Visitor {
 	/**
 	 * Decrements the indent level.
 	 *
-	 * @return tx_dbal_sql_Visitor
+	 * @return VisitorInterface
 	 */
 	public function unindent() {
 		$this->level--;
