@@ -68,6 +68,21 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		$sql = 'SELECT sys_refindex.*, tx_dam_file_tracking.* FROM sys_refindex, tx_dam_file_tracking WHERE sys_refindex.tablename = \'tx_dam_file_tracking\''
 			. ' AND sys_refindex.ref_string LIKE CONCAT(tx_dam_file_tracking.file_path, tx_dam_file_tracking.file_name)';
 
+		$sql = 'SELECT * FROM tt_content WHERE pid = 32';
+
+		$loops = 200;
+
+		/************************************
+		 *
+		 * Query (t3lib_DB)
+		 *
+		 ************************************/
+
+		$db = t3lib_div::makeInstance('ux_t3lib_DB');
+		$start = microtime(true);
+		for ($i = 0; $i < $loops; $i++) $db->SELECTquery('*', 'tt_content', 'pid=32');
+		$this->content .= $this->doc->section('t3lib_DB', $loops . ' loops: ' . ((microtime(true) - $start) * 1000) . ' ms');
+
 		/************************************
 		 *
 		 * Query
@@ -82,18 +97,36 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		 *
 		 ************************************/
 
-		$global = t3lib_div::makeInstance('tx_dbal_sql_Global');
+		$global = new tx_dbal_sql_Global();
+
+		$start = microtime(true);
 		/* @var tx_dbal_sql_Global $global */
-		$inputStream = t3lib_div::makeInstance('tx_dbal_System_Io_StringReader', $sql);
+
+		for ($i = 0; $i < $loops; $i++) {
+			$inputStream = new tx_dbal_System_Io_StringReader($sql);
+			/* @var tx_dbal_System_Io_StringReader $inputStream */
+			$scanner = new tx_dbal_sql_Scanner($global, $inputStream);
+			/* @var tx_dbal_sql_Scanner $scanner */
+			while ($scanner->token != self::EOF) {
+				$scanner->nextToken();
+			}
+		}
+		$end = microtime(true);
+
+		$content .= '<p>' . $loops . ' loops: ' . (($end - $start) * 1000) . ' ms</p>';
+
+		/* @var tx_dbal_sql_Global $global */
+		$inputStream = new tx_dbal_System_Io_StringReader($sql);
 		/* @var tx_dbal_System_Io_StringReader $inputStream */
-		$scanner = t3lib_div::makeInstance('tx_dbal_sql_Scanner', $global, $inputStream);
+		$scanner = new tx_dbal_sql_Scanner($global, $inputStream);
 		/* @var tx_dbal_sql_Scanner $scanner */
 
-		$content = '<div class="scanner">';
+		$content .= '<div class="scanner">';
 		while ($scanner->token != self::EOF) {
 			$content .= $scanner->representation() . "<br />\n";
 			$scanner->nextToken();
 		}
+
 		$content .= '</div>';
 
 		$this->content .= $this->doc->section('Scanner', $content);
@@ -112,16 +145,20 @@ class tx_dbal_module2 extends t3lib_SCbase implements tx_dbal_sql_Tokens {
 		 *
 		 ************************************/
 
-		$inputStream = t3lib_div::makeInstance('tx_dbal_System_Io_StringReader', $sql);
+		$start = microtime(true);
+
+		$inputStream = new tx_dbal_System_Io_StringReader($sql);
 		/* @var tx_dbal_System_Io_StringReader $inputStream */
-		$parser = t3lib_div::makeInstance('tx_dbal_sql_Parser', $global, $inputStream);
+		$parser = new tx_dbal_sql_Parser($global, $inputStream);
 		/* @var tx_dbal_sql_Parser $parser */
-		$printer = t3lib_div::makeInstance('tx_dbal_sql_Printer');
+		$printer = new tx_dbal_sql_Printer();
 		/* @var tx_dbal_sql_Printer $printer */
+
+		$start = microtime(true);
 
 		$content = '<div class="printer">';
 		$content .= $printer->outputStatements($parser->parse())->flush();
-		$content .= '</div>';
+		$content .= '</div><p>Execution time: ' . ((microtime(true) - $start) * 1000) . ' ms</p>';
 
 		$this->content .= $this->doc->section('Printer', $content);
 
