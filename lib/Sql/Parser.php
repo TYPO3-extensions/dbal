@@ -33,6 +33,7 @@ require_once(dirname(__FILE__) . '/Tree/AbstractExpr.php');
 require_once(dirname(__FILE__) . '/Tree/Bad.php');
 require_once(dirname(__FILE__) . '/Tree/BooleanPrimary.php');
 require_once(dirname(__FILE__) . '/Tree/CombinedIdentifier.php');
+require_once(dirname(__FILE__) . '/Tree/Function.php');
 require_once(dirname(__FILE__) . '/Tree/Identifier.php');
 require_once(dirname(__FILE__) . '/Tree/IntLiteral.php');
 require_once(dirname(__FILE__) . '/Tree/Operation.php');
@@ -68,11 +69,9 @@ class Sql_Parser extends Sql_Scanner {
 	 */
 	protected function error($expected) {
 		if (is_integer($expected)) {
-			throw new Sql_Exceptions_TokenExpected($this->start, $this->tokenClass($expected));
-		} else {
-			$message = 'Invalid syntax. Expected: ' . $expected . ', found: lexeme ' . $this->representation();
-			throw new Exception($message);
+			$expected = $this->tokenClass($expected);
 		}
+		throw new Sql_Exceptions_TokenExpected($this->start, $expected, $this->representation());
 	}
 
 	/**
@@ -100,7 +99,6 @@ class Sql_Parser extends Sql_Scanner {
 	 */
 	protected function accept($expected) {
 		if (!$this->acceptIf($expected)) {
-			t3lib_div::debug($this->representation(), 'found');
 			$this->error($expected);
 		}
 	}
@@ -542,7 +540,15 @@ class Sql_Parser extends Sql_Scanner {
 			case self::T_CASE:
 				// TODO
 				break;
-			// TODO: function call
+			default:
+				if ($this->token > self::OFFSET_FUNCTIONS) {
+					$functionName = $this->tokenClass($this->token);
+					$this->accept($this->token);
+					$this->accept(self::T_LPAREN);
+					// TODO
+					//$this->accept(self::T_RPAREN);
+					return new Sql_Tree_Function($this->start, $functionName);
+				}
 		}
 	}
 

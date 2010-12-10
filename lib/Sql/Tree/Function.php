@@ -27,31 +27,44 @@
 
 
 /**
- * This interface provides method for the visitor design pattern.
+ * A function tree.
  *
- * @category    Interfaces
+ * @category    Tree
  * @package     SQL
- * @subpackage  Interfaces
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface Sql_Interfaces_Visitor {
+class Sql_Tree_Function extends Sql_AbstractTree {
 
-	public function caseBad(Sql_Tree_Bad $tree);
-	public function caseBooleanPrimary(Sql_Tree_BooleanPrimary $tree);
-	public function caseCombinedIdentifier(Sql_Tree_CombinedIdentifier $tree);
-	public function caseFunction(Sql_Tree_Function $tree);
-	public function caseIdentifier(Sql_Tree_Identifier $tree);
-	public function caseIntLiteral(Sql_Tree_IntLiteral $tree);
-	public function caseOperation(Sql_Tree_Operation $tree);
-	public function caseSelect(Sql_Tree_Select $tree);
-	public function caseSelectExpr(Sql_Tree_SelectExpr $tree);
-	public function caseSimpleExpr(Sql_Tree_SimpleExpr $tree);
-	public function caseStar(Sql_Tree_Star $tree);
-	public function caseStringLiteral(Sql_Tree_StringLiteral $tree);
-	public function caseTableFactor(Sql_Tree_TableFactor $tree);
+	/**
+	 * @var string
+	 */
+	public $functionName;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param string $functionName
+	 */
+	public function __construct($pos, $functionName) {
+		parent::__construct($pos);
+
+		$this->functionName = $functionName;
+	}
+
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param Sql_Interfaces_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(Sql_Interfaces_Visitor $visitor) {
+		$visitor->caseFunction($this);
+	}
 
 }
 

@@ -75,6 +75,12 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	protected $buffer;
 
 	/**
+	 * Array of function names
+	 * @var array
+	 */
+	protected static $functions = array();
+
+	/**
 	 * Current character
 	 * @var string
 	 */
@@ -113,6 +119,23 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	 * @var string
 	 */
 	private $oldCh;
+
+	/**
+	 * Adds support for a function.
+	 *
+	 * @param string $functionName
+	 * @return void
+	 * @throws InvalidArgumentException
+	 * @static
+	 */
+	public static function addFunction($functionName) {
+		if (isset(self::$functions[$functionName])) {
+			throw new InvalidArgumentException('Function "' . $functionName . '" is already defined', 1291994389);
+		}
+		$functionId = self::OFFSET_FUNCTIONS + count(self::$functions) + 1;
+		self::$functions[$functionName] = $functionId;
+		self::$functions[$functionId] = $functionName;
+	}
 
 	/**
 	 * Default constructor
@@ -319,13 +342,6 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	 */
 	protected function getReservedWord($str) {
 		switch (strtoupper($str)) {
-			// Functions
-			case 'CONCAT':
-				return self::T_CONCAT;
-			case 'FIND_IN_SET':
-				return self::T_FINDINSET;
-
-			// Reserved words
 			case 'ACCESSIBLE':
 				return self::T_ACCESSIBLE;
 			case 'ADD':
@@ -788,6 +804,10 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 				return self::T_ZEROFILL;
 
 			default:
+				if (isset(self::$functions[$str])) {
+					return self::$functions[$str];
+				}
+
 				return 0;
 		}
 	}
@@ -801,6 +821,9 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	 * @static
 	 */
 	public static function tokenClass($token) {
+		if ($token > self::OFFSET_FUNCTIONS && isset(self::$functions[$token])) {
+			return self::$functions[$token];
+		}
 		switch ($token) {
 			case self::EOF                             : return '<eof>';
 			case self::BAD                             : return '<bad>';
@@ -836,10 +859,6 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 			case self::T_BITAND                        : return '&';
 			case self::T_BITOR                         : return '|';
 			case self::T_TILDE                         : return '~';
-
-			// Functions
-			case self::T_CONCAT                        : return 'CONCAT';
-			case self::T_FINDINSET                     : return 'FIND_IN_SET';
 
 			// Reserved words
 			case self::T_ACCESSIBLE                    : return 'ACCESSIBLE';

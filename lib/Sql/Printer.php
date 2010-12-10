@@ -183,6 +183,18 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	}
 
 	/**
+	 * @param Sql_Tree_Function $tree
+	 * @return void
+	 */
+	public function caseFunction(Sql_Tree_Function $tree) {
+		$this->output($tree->functionName);
+		$this->output('(')->indent()->outputNewLine();
+		$this->output('--- TODO ---');
+		$this->unindent()->outputNewLine();
+		$this->output(')');
+	}
+
+	/**
 	 * @param Sql_Tree_Identifier $obj
 	 * @return void
 	 */

@@ -40,6 +40,7 @@
 interface Sql_Interfaces_Tokens {
 
 	const EOF                             =  -1; // end of file
+	const OFFSET_FUNCTIONS                = 999; // offset for functions
 	const BAD                             =   0; // unknown lexeme
 
 	const T_IDENTIFIER                    =   1; // identifier
@@ -74,10 +75,6 @@ interface Sql_Interfaces_Tokens {
 	const T_BITAND                        =  26; // '&'
 	const T_BITOR                         =  27; // '|'
 	const T_TILDE                         =  28; // '~'
-
-	// Functions
-	const T_CONCAT                        =  40; // 'CONCAT'
-	const T_FINDINSET                     =  41; // 'FIND_IN_SET'
 
 	// Reserved words
 	// see http://dev.mysql.com/doc/mysqld-version-reference/en/mysqld-version-reference-reservedwords-5-5.html

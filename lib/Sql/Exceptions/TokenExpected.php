@@ -43,13 +43,14 @@ class Sql_Exceptions_TokenExpected extends Exception {
 	 * Default constructor.
 	 *
 	 * @param integer $position
-	 * @param string $class
+	 * @param string $expected
+	 * @param string $found
 	 */
-	public function __construct($position, $class) {
+	public function __construct($position, $expected, $found) {
 		$message = Sql_Position::line($position);
 		$message .= ':';
 		$message .= Sql_Position::column($position);
-		$message .= ': Expected token from class ' . (int) $class;
+		$message .= ': Expected token from class "' . $expected . '", found: ' . $found;
 
 		parent::__construct($message);
 	}
