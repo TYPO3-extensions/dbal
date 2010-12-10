@@ -94,7 +94,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 
 	/**
 	 * Input stream
-	 * @var System_Io_StringReader
+	 * @var Sql_System_Io_StringReader
 	 */
 	private $in;
 
@@ -110,7 +110,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	 * @param Sql_Global $global
 	 * @param System_Io_Reader $in Input stream
 	 */
-	public function __construct(Sql_Global $global, System_Io_StringReader $in) {
+	public function __construct(Sql_Global $global, Sql_System_Io_StringReader $in) {
 		$this->global = $global;
 		$this->in = $in;
 		$this->buffer = '';

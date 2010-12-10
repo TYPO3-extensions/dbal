@@ -27,7 +27,7 @@ $BE_USER->modAccess($MCONF, 1);
 
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Interfaces/Tokens.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Global.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/System/Io/StringReader.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/System/Io/StringReader.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Parser.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Printer.php');
 
@@ -106,10 +106,10 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		/* @var tx_dbal_sql_Global $global */
 
 		for ($i = 0; $i < $loops; $i++) {
-			$inputStream = new System_Io_StringReader($sql);
-			/* @var tx_dbal_System_Io_StringReader $inputStream */
+			$inputStream = new Sql_System_Io_StringReader($sql);
+			/* @var Sql__System_Io_StringReader $inputStream */
 			$scanner = new Sql_Scanner($global, $inputStream);
-			/* @var tx_dbal_sql_Scanner $scanner */
+			/* @var Sql_Scanner $scanner */
 			while ($scanner->token != self::EOF) {
 				$scanner->nextToken();
 			}
@@ -118,11 +118,11 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
 		$content .= '<p>' . $loops . ' loops: ' . (($end - $start) * 1000) . ' ms</p>';
 
-		/* @var tx_dbal_sql_Global $global */
-		$inputStream = new System_Io_StringReader($sql);
-		/* @var tx_dbal_System_Io_StringReader $inputStream */
+		/* @var Sql_Global $global */
+		$inputStream = new Sql_System_Io_StringReader($sql);
+		/* @var Sql_System_Io_StringReader $inputStream */
 		$scanner = new Sql_Scanner($global, $inputStream);
-		/* @var tx_dbal_sql_Scanner $scanner */
+		/* @var Sql_Scanner $scanner */
 
 		$content .= '<div class="scanner">';
 		while ($scanner->token != self::EOF) {
@@ -150,12 +150,12 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
 		$start = microtime(true);
 
-		$inputStream = new System_Io_StringReader($sql);
-		/* @var tx_dbal_System_Io_StringReader $inputStream */
+		$inputStream = new Sql_System_Io_StringReader($sql);
+		/* @var Sql_System_Io_StringReader $inputStream */
 		$parser = new Sql_Parser($global, $inputStream);
-		/* @var tx_dbal_sql_Parser $parser */
+		/* @var Sql_Parser $parser */
 		$printer = new Sql_Printer();
-		/* @var tx_dbal_sql_Printer $printer */
+		/* @var Sql_Printer $printer */
 
 		$start = microtime(true);
 
