@@ -27,17 +27,34 @@
 
 
 /**
- * An combined identifier (table + field) tree.
+ * An identifier tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_CombinedIdentifier extends tx_dbal_sql_tree_AbstractExpr {
+class Sql_Tree_Identifier extends Sql_AbstractTree {
+
+	/**
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param string $name
+	 */
+	public function __construct($pos, $name) {
+		parent::__construct($pos);
+
+		$this->name = $name;
+	}
 
 	/**
 	 * Applies the visitor onto this class.
@@ -46,7 +63,7 @@ class tx_dbal_sql_tree_CombinedIdentifier extends tx_dbal_sql_tree_AbstractExpr 
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseCombinedIdentifier($this);
+		$visitor->caseIdentifier($this);
 	}
 
 }

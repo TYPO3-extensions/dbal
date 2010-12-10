@@ -26,10 +26,10 @@
 $BE_USER->modAccess($MCONF, 1);
 
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Interfaces/Tokens.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_global.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Global.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/System/Io/StringReader.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_parser.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/class.tx_dbal_sql_printer.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Parser.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Printer.php');
 
 class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
@@ -100,7 +100,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		 *
 		 ************************************/
 
-		$global = new tx_dbal_sql_Global();
+		$global = new Sql_Global();
 
 		$start = microtime(true);
 		/* @var tx_dbal_sql_Global $global */
@@ -108,7 +108,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		for ($i = 0; $i < $loops; $i++) {
 			$inputStream = new System_Io_StringReader($sql);
 			/* @var tx_dbal_System_Io_StringReader $inputStream */
-			$scanner = new tx_dbal_sql_Scanner($global, $inputStream);
+			$scanner = new Sql_Scanner($global, $inputStream);
 			/* @var tx_dbal_sql_Scanner $scanner */
 			while ($scanner->token != self::EOF) {
 				$scanner->nextToken();
@@ -121,7 +121,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		/* @var tx_dbal_sql_Global $global */
 		$inputStream = new System_Io_StringReader($sql);
 		/* @var tx_dbal_System_Io_StringReader $inputStream */
-		$scanner = new tx_dbal_sql_Scanner($global, $inputStream);
+		$scanner = new Sql_Scanner($global, $inputStream);
 		/* @var tx_dbal_sql_Scanner $scanner */
 
 		$content .= '<div class="scanner">';
@@ -152,9 +152,9 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
 		$inputStream = new System_Io_StringReader($sql);
 		/* @var tx_dbal_System_Io_StringReader $inputStream */
-		$parser = new tx_dbal_sql_Parser($global, $inputStream);
+		$parser = new Sql_Parser($global, $inputStream);
 		/* @var tx_dbal_sql_Parser $parser */
-		$printer = new tx_dbal_sql_Printer();
+		$printer = new Sql_Printer();
 		/* @var tx_dbal_sql_Printer $printer */
 
 		$start = microtime(true);

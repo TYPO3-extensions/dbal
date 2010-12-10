@@ -30,8 +30,8 @@
  * This interface provides method for the visitor design pattern.
  *
  * @category    Interfaces
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @package     SQL
+ * @subpackage  Interfaces
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
@@ -39,18 +39,18 @@
  */
 interface Sql_Interfaces_Visitor {
 
-	public function caseBad(tx_dbal_sql_tree_Bad $tree);
-	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree);
-	public function caseCombinedIdentifier(tx_dbal_sql_tree_CombinedIdentifier $tree);
-	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree);
-	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree);
-	public function caseOperation(tx_dbal_sql_tree_Operation $tree);
-	public function caseSelect(tx_dbal_sql_tree_Select $tree);
-	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree);
-	public function caseSimpleExpr(tx_dbal_sql_tree_SimpleExpr $tree);
-	public function caseStar(tx_dbal_sql_tree_Star $tree);
-	public function caseStringLiteral(tx_dbal_sql_tree_StringLiteral $tree);
-	public function caseTableFactor(tx_dbal_sql_tree_TableFactor $tree);
+	public function caseBad(Sql_Tree_Bad $tree);
+	public function caseBooleanPrimary(Sql_Tree_BooleanPrimary $tree);
+	public function caseCombinedIdentifier(Sql_Tree_CombinedIdentifier $tree);
+	public function caseIdentifier(Sql_Tree_Identifier $tree);
+	public function caseIntLiteral(Sql_Tree_IntLiteral $tree);
+	public function caseOperation(Sql_Tree_Operation $tree);
+	public function caseSelect(Sql_Tree_Select $tree);
+	public function caseSelectExpr(Sql_Tree_SelectExpr $tree);
+	public function caseSimpleExpr(Sql_Tree_SimpleExpr $tree);
+	public function caseStar(Sql_Tree_Star $tree);
+	public function caseStringLiteral(Sql_Tree_StringLiteral $tree);
+	public function caseTableFactor(Sql_Tree_TableFactor $tree);
 
 }
 

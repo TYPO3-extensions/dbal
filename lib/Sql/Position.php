@@ -35,14 +35,13 @@
  * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
  * @category    Parser
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @package     SQL
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_Position {
+class Sql_Position {
 
 	/**
 	 * Number of bits reserved for encoding the column.

@@ -30,8 +30,8 @@
  * An exception for an unknown encountered token.
  *
  * @category    Exception
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\error
+ * @package     SQL
+ * @subpackage  Exceptions
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html

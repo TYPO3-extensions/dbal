@@ -27,48 +27,33 @@
 
 
 /**
- * A SELECT tree.
+ * An integer literal tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_Select extends tx_dbal_sql_AbstractTree {
+class Sql_Tree_IntLiteral extends Sql_AbstractTree {
 
 	/**
-	 * @var tx_dbal_sql_tree_SelectExpr[]
+	 * @var integer
 	 */
-	public $selectExpr;
-
-	/**
-	 * @var tx_dbal_sql_tree_TableReference[]
-	 */
-	public $tableReferences;
-
-	/**
-	 * @var tx_dbal_sql_tree_Expr
-	 */
-	public $whereCondition;
+	public $value;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
-	 * @param tx_dbal_sql_tree_SelectExpr[] $fields
-	 * @param tx_dbal_sql_tree_TableReference[] $tableReferences
-	 * @param tx_dbal_sql_tree_WhereCondition $whereCondition
+	 * @param integer $value
 	 */
-	public function __construct($pos, array $selectExpr, array $tableReferences, /* tx_dbal_sql_tree_Expr */ $whereCondition) {
+	public function __construct($pos, $value) {
 		parent::__construct($pos);
 
-		$this->selectExpr = $selectExpr;
-		$this->tableReferences = $tableReferences;
-		$this->whereCondition = $whereCondition;
-		//$this->depth += max($left != null ? $left->depth : 0, $right != null ? $right->depth : 0);
+		$this->value = $value;
 	}
 
 	/**
@@ -78,7 +63,7 @@ class tx_dbal_sql_tree_Select extends tx_dbal_sql_AbstractTree {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseSelect($this);
+		$visitor->caseIntLiteral($this);
 	}
 
 }

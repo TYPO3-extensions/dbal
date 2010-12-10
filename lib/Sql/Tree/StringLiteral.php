@@ -27,20 +27,20 @@
 
 
 /**
- * An integer literal tree.
+ * A string literal tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_IntLiteral extends tx_dbal_sql_AbstractTree {
+class Sql_Tree_StringLiteral extends Sql_AbstractTree {
 
 	/**
-	 * @var integer
+	 * @var string
 	 */
 	public $value;
 
@@ -63,7 +63,7 @@ class tx_dbal_sql_tree_IntLiteral extends tx_dbal_sql_AbstractTree {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseIntLiteral($this);
+		$visitor->caseStringLiteral($this);
 	}
 
 }

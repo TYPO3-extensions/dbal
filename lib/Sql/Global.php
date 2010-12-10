@@ -27,50 +27,30 @@
 
 
 /**
- * A table_factor tree.
+ * This class provides methods to show error and debug messages.
  *
- * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * The whole parser is based on compilation course (LAMP) I attended at
+ * Swiss Federal Institute of Technology. Nice to use that again ;-)
+ * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
+ *
+ * @category    Parser
+ * @package     SQL
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_TableFactor extends tx_dbal_sql_AbstractTree {
+class Sql_Global implements t3lib_Singleton {
 
-	/**
-	 * @var tx_dbal_sql_tree_Identifier
-	 */
-	public $tableName;
+	public function error($position, $message) {
+		$str = '';
+		$str .= Sql_Position::line($position);
+		$str .= ':';
+		$str .= Sql_Position::column($position);
+		$str .= ': ';
+		$str .= $message;
 
-	/**
-	 * @var tx_dbal_sql_tree_Identifier
-	 */
-	public $alias;
-
-	/**
-	 * Default constructor.
-	 *
-	 * @param integer $pos
-	 * @param tx_dbal_sql_tree_Identifier $tableName
-	 * @param tx_dbal_sql_tree_Identifier $alias
-	 */
-	public function __construct($pos, tx_dbal_sql_tree_Identifier $tableName, /* tx_dbal_sql_tree_Identifier */ $alias = null) {
-		parent::__construct($pos);
-
-		$this->tableName = $tableName;
-		$this->alias = $alias;
-	}
-
-	/**
-	 * Applies the visitor onto this class.
-	 *
-	 * @param Sql_Interfaces_Visitor $visitor
-	 * @return void
-	 */
-	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseTableFactor($this);
+		t3lib_div::debug($str, 'SQL Error');
 	}
 
 }

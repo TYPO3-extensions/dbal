@@ -27,36 +27,40 @@
 
 
 /**
- * A boolean_primary tree.
+ * A table_factor tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_BooleanPrimary extends tx_dbal_sql_tree_AbstractExpr {
+class Sql_Tree_TableFactor extends Sql_AbstractTree {
 
 	/**
-	 * @var integer
+	 * @var Sql_Tree_Identifier
 	 */
-	public $comparisonOperator;
+	public $tableName;
+
+	/**
+	 * @var Sql_Tree_Identifier
+	 */
+	public $alias;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
-	 * @param tx_dbal_sql_AbstractTree $left
-	 * @param integer $comparisonOperator
-	 * @param tx_dbal_sql_AbstractTree $right
-	 *
+	 * @param Sql_Tree_Identifier $tableName
+	 * @param Sql_Tree_Identifier $alias
 	 */
-	public function __construct($pos, tx_dbal_sql_AbstractTree $left, $comparisonOperator, tx_dbal_sql_AbstractTree $right) {
-		parent::__construct($pos, $left, $right);
+	public function __construct($pos, Sql_Tree_Identifier $tableName, /* Sql_Tree_Identifier */ $alias = null) {
+		parent::__construct($pos);
 
-		$this->comparisonOperator = $comparisonOperator;
+		$this->tableName = $tableName;
+		$this->alias = $alias;
 	}
 
 	/**
@@ -66,7 +70,7 @@ class tx_dbal_sql_tree_BooleanPrimary extends tx_dbal_sql_tree_AbstractExpr {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseBooleanPrimary($this);
+		$visitor->caseTableFactor($this);
 	}
 
 }

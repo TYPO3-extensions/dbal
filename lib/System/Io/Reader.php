@@ -31,8 +31,8 @@
  * Abstract class for reading character streams.
  *
  * @category    System
- * @package     TYPO3
- * @subpackage  tx_dbal\system\io
+ * @package     System
+ * @subpackage  IO
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html

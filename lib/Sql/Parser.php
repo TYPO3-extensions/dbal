@@ -25,23 +25,23 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(dirname(__FILE__) . '/class.tx_dbal_sql_scanner.php');
+require_once(dirname(__FILE__) . '/Scanner.php');
 
-require_once(dirname(__FILE__) . '/class.tx_dbal_sql_abstracttree.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_abstractexpr.php');
+require_once(dirname(__FILE__) . '/AbstractTree.php');
+require_once(dirname(__FILE__) . '/Tree/AbstractExpr.php');
 
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_bad.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_booleanprimary.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_combinedidentifier.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_identifier.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_intliteral.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_operation.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_select.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_selectexpr.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_simpleexpr.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_star.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_stringliteral.php');
-require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_tablefactor.php');
+require_once(dirname(__FILE__) . '/Tree/Bad.php');
+require_once(dirname(__FILE__) . '/Tree/BooleanPrimary.php');
+require_once(dirname(__FILE__) . '/Tree/CombinedIdentifier.php');
+require_once(dirname(__FILE__) . '/Tree/Identifier.php');
+require_once(dirname(__FILE__) . '/Tree/IntLiteral.php');
+require_once(dirname(__FILE__) . '/Tree/Operation.php');
+require_once(dirname(__FILE__) . '/Tree/Select.php');
+require_once(dirname(__FILE__) . '/Tree/SelectExpr.php');
+require_once(dirname(__FILE__) . '/Tree/SimpleExpr.php');
+require_once(dirname(__FILE__) . '/Tree/Star.php');
+require_once(dirname(__FILE__) . '/Tree/StringLiteral.php');
+require_once(dirname(__FILE__) . '/Tree/TableFactor.php');
 
 /**
  * Parser ("syntactic analyzer") of the SQL language.
@@ -51,14 +51,13 @@ require_once(dirname(__FILE__) . '/Tree/class.tx_dbal_sql_tree_tablefactor.php')
  * @link http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
  * @category    Parser
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @package     SQL
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
+class Sql_Parser extends Sql_Scanner {
 
 	/**
 	 * Throws an error.
@@ -97,7 +96,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * @param integer $expected
 	 * @return void
-	 * @throws tx_dbal_sql_error_TokenExpected
+	 * @throws Sql_Exceptions_TokenExpected
 	 */
 	protected function accept($expected) {
 		if (!$this->acceptIf($expected)) {
@@ -109,7 +108,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	/**
 	 * Returns the syntactic tree built from input stream.
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return Sql_AbstractTree
 	 */
 	public function parse() {
 		return $this->parseSqlScript();
@@ -118,7 +117,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	/**
 	 * Returns the syntactic tree built from SQL input stream.
 	 *
-	 * @return tx_dbal_sql_AbstractTree[]
+	 * @return Sql_AbstractTree[]
 	 */
 	protected function parseSqlScript() {
 		$sqlScript = array();
@@ -176,7 +175,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * 		["LIMIT" [offset,] row_count]
 	 *
 	 *
-	 * @return tx_dbal_sql_tree_Select
+	 * @return Sql_Tree_Select
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	protected function parseSelect() {
@@ -228,7 +227,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			$this->accept(self::T_LIMIT);
 		}
 
-		return new tx_dbal_sql_tree_Select($this->start, $selectExpressions, $tableReferences, $whereCondition);
+		return new Sql_Tree_Select($this->start, $selectExpressions, $tableReferences, $whereCondition);
 	}
 
 	/**
@@ -236,7 +235,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * select_expr := [identifier "."] {identifier ["AS"] [identifier] | "*"}
 	 *
-	 * @return tx_dbal_sql_tree_SelectExpr
+	 * @return Sql_Tree_SelectExpr
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	protected function parseSelectExpr() {
@@ -244,7 +243,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		if ($this->token == self::T_IDENTIFIER) {
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
-			$tableOrField = new tx_dbal_sql_tree_Identifier($this->start, $name);
+			$tableOrField = new Sql_Tree_Identifier($this->start, $name);
 
 			if ($this->token == self::T_DOT) {
 				$table = $tableOrField;
@@ -253,17 +252,17 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 				if ($this->token == self::T_IDENTIFIER) {
 					$name = $this->chars;
 					$this->accept(self::T_IDENTIFIER);
-					$field = new tx_dbal_sql_tree_Identifier($this->start, $name);
+					$field = new Sql_Tree_Identifier($this->start, $name);
 				} else {
 					$this->accept(self::T_STAR);
-					$field = new tx_dbal_sql_tree_Star($this->start);
+					$field = new Sql_Tree_Star($this->start);
 				}
 			} else {
 				$field = $tableOrField;
 			}
 		} else {
 			$this->accept(self::T_STAR);
-			$field = new tx_dbal_sql_tree_Star($this->start);
+			$field = new Sql_Tree_Star($this->start);
 		}
 
 		$alias = null;
@@ -271,10 +270,10 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			$this->acceptIf(self::T_AS);
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
-			$alias = new tx_dbal_sql_tree_Identifier($this->start, $name);
+			$alias = new Sql_Tree_Identifier($this->start, $name);
 		}
 
-		return new tx_dbal_sql_tree_SelectExpr($this->start, $table, $field, $alias);
+		return new Sql_Tree_SelectExpr($this->start, $table, $field, $alias);
 	}
 
 	/**
@@ -283,7 +282,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 * table_reference := table_factor
 	 *                    | join_table
 	 *
-	 * @return tx_dbal_sql_tree_TableReference
+	 * @return Sql_Tree_TableReference
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/join.html
 	 */
 	protected function parseTableReference() {
@@ -295,23 +294,23 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * table_factor := identifier [["AS"] identifier]
 	 *
-	 * @return tx_dbal_sql_tree_TableFactor
+	 * @return Sql_Tree_TableFactor
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/join.html
 	 */
 	protected function parseTableFactor() {
 		$name = $this->chars;
 		$this->accept(self::T_IDENTIFIER);
-		$tableName = new tx_dbal_sql_tree_Identifier($this->start, $name);
+		$tableName = new Sql_Tree_Identifier($this->start, $name);
 		$alias = null;
 
 		if ($this->token == self::T_AS || $this->token == self::T_IDENTIFIER) {
 			$this->acceptIf(self::T_AS);
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
-			$alias = new tx_dbal_sql_tree_Identifier($this->start, $name);
+			$alias = new Sql_Tree_Identifier($this->start, $name);
 		}
 
-		return new tx_dbal_sql_tree_TableFactor($this->start, $tableName, $alias);
+		return new Sql_Tree_TableFactor($this->start, $tableName, $alias);
 	}
 
 	/**
@@ -319,7 +318,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * where_condition := expr
 	 *
-	 * @return tx_dbal_sql_tree_Expr
+	 * @return Sql_Tree_Expr
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseWhereCondition() {
@@ -340,13 +339,13 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *         | boolean_primary "IS" ["NOT"] {TRUE | FALSE | UNKNOWN}
 	 *         | boolean_primary
 	 *
-	 * @return tx_dbal_sql_tree_AbstractExpr
+	 * @return Sql_Tree_AbstractExpr
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseExpr() {
 		if ($this->token == self::T_NOT || $this->token == self::T_LOGICNOT) {
 			$this->accept($this->token);
-			return new tx_dbal_sql_tree_SimpleExpr($this->start, self::T_NOT, $this->parseExpr());
+			return new Sql_Tree_SimpleExpr($this->start, self::T_NOT, $this->parseExpr());
 		} else {
 			$expr = $this->parseBooleanPrimary();
 			/*
@@ -364,7 +363,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 				case self::T_XOR:       // 'XOR'
 					$operator = $this->token;
 					$this->accept($this->token);
-					return new tx_dbal_sql_tree_Operation($this->start, $operator, $expr, $this->parseExpr());
+					return new Sql_Tree_Operation($this->start, $operator, $expr, $this->parseExpr());
 			}
 
 			return $expr;
@@ -383,7 +382,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *
 	 * comparison_operator := "=" | ">=" | ">" | "<=" | "<" | "<>" | "!="
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return Sql_AbstractTree
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseBooleanPrimary() {
@@ -400,7 +399,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		if (in_array($this->token, $comparisonOperators)) {
 			$comparisonOperator = $this->token;
 			$this->accept($comparisonOperator);
-			return new tx_dbal_sql_tree_BooleanPrimary(
+			return new Sql_Tree_BooleanPrimary(
 				$this->start,
 				$predicate,
 				$comparisonOperator,
@@ -421,7 +420,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *              | bit_expr ["NOT"] "LIKE" simple_expr
 	 *              | bit_expr
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return Sql_AbstractTree
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parsePredicate() {
@@ -447,7 +446,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *              | bit_expr "^" bit_expr
 	 *              | simple_expr
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return Sql_AbstractTree
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseBitExpr() {
@@ -467,7 +466,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		while (in_array($this->token, $operators)) {
 			$operator = $this->token;
 			// TODO: take priority of operators into account
-			$simpleExpr = new tx_dbal_sql_tree_Operation($operator, $simpleExpr, $this->parseBitExpr(), null);
+			$simpleExpr = new Sql_Tree_Operation($operator, $simpleExpr, $this->parseBitExpr(), null);
 		}
 
 		return $simpleExpr;
@@ -490,7 +489,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 *                | "EXISTS" "(" subquery ")"
 	 *                | case_expr
 	 *
-	 * @return tx_dbal_sql_AbstractTree
+	 * @return Sql_AbstractTree
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/expressions.html
 	 */
 	protected function parseSimpleExpr() {
@@ -498,15 +497,15 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			case self::T_STRING:
 				$value = $this->chars;
 				$this->accept(self::T_STRING);
-				return new tx_dbal_sql_tree_StringLiteral($this->start, $value);
+				return new Sql_Tree_StringLiteral($this->start, $value);
 			case self::T_NUMBER:
 				$value = $this->chars;
 				$this->accept(self::T_NUMBER);
-				return new tx_dbal_sql_tree_IntLiteral($this->start, $value);
+				return new Sql_Tree_IntLiteral($this->start, $value);
 			case self::T_IDENTIFIER:
 				$name = $this->chars;
 				$this->accept(self::T_IDENTIFIER);
-				$tableOrField = new tx_dbal_sql_tree_Identifier($this->start, $name);
+				$tableOrField = new Sql_Tree_Identifier($this->start, $name);
 				$table = null;
 
 				if ($this->token == self::T_DOT) {
@@ -514,16 +513,16 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 					$this->accept(self::T_DOT);
 					$name = $this->chars;
 					$this->accept(self::T_IDENTIFIER);
-					$field = new tx_dbal_sql_tree_Identifier($this->start, $name);
+					$field = new Sql_Tree_Identifier($this->start, $name);
 				}
-				return $table ? new tx_dbal_sql_tree_CombinedIdentifier($this->start, $table, $field) : $tableOrField;
+				return $table ? new Sql_Tree_CombinedIdentifier($this->start, $table, $field) : $tableOrField;
 			case self::T_PLUS:
 			case self::T_MINUS:
 			case self::T_TILDE:
 			case self::T_LOGICNOT:
 			case self::T_BINARY:
 				$unaryOperator = $this->token;
-				return new tx_dbal_sql_tree_SimpleExpr($this->start, $unaryOperator, $this->parseSimpleExpr());
+				return new Sql_Tree_SimpleExpr($this->start, $unaryOperator, $this->parseSimpleExpr());
 			case self::T_LPAREN:
 				$subquery = null;
 				$expr = null;
@@ -534,12 +533,12 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 					$expr = $this->parseExpr();
 				}
 				$this->accept(self::T_RPAREN);
-				return new tx_dbal_sql_tree_SimpleExpr($this->start, '', $expr, $subquery);
+				return new Sql_Tree_SimpleExpr($this->start, '', $expr, $subquery);
 			case self::T_EXISTS:
 				$this->accept(self::T_EXISTS);
 				$subquery = $this->parseSubquery();
 				$this->accept(self::T_RPAREN);
-				return new tx_dbal_sql_tree_SimpleExpr($this->start, 'EXISTS', null, $subquery);
+				return new Sql_Tree_SimpleExpr($this->start, 'EXISTS', null, $subquery);
 			case self::T_CASE:
 				// TODO
 				break;

@@ -33,8 +33,8 @@ require_once(dirname(__FILE__) . '/Reader.php');
  * Dummy class for reading from string of characters.
  *
  * @category    System
- * @package     TYPO3
- * @subpackage  tx_dbal\system\io
+ * @package     System
+ * @subpackage  IO
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html

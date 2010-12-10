@@ -27,42 +27,48 @@
 
 
 /**
- * A simple_expr tree.
+ * An operation tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_SimpleExpr extends tx_dbal_sql_tree_AbstractExpr {
+class Sql_Tree_Operation extends Sql_AbstractTree {
 
 	/**
 	 * @var integer
 	 */
-	public $unaryOperator;
+	public $operator;
 
 	/**
-	 * @var tx_dbal_sql_tree_Select
+	 * @var Sql_AbstractTree
 	 */
-	public $subquery;
+	public $left;
+
+	/**
+	 * @var Sql_AbstractTree
+	 */
+	public $right;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
-	 * @param integer $unaryOperator
-	 * @param tx_dbal_sql_tree_AbstractExpr $simpleExpr
-	 * @param tx_dbal_sql_tree_select $subquery
-	 *
+	 * @param integer $operator
+	 * @param Sql_AbstractTree $left
+	 * @param Sql_AbstractTree $right
 	 */
-	public function __construct($pos, $unaryOperator, /* tx_dbal_sql_tree_AbstractExpr */ $simpleExpr, /* tx_dbal_sql_tree_Select */ $subquery = null) {
-		parent::__construct($pos, $simpleExpr, null);
+	public function __construct($pos, $operator, /* Sql_AbstractTree */ $left, /* Sql_AbstractTree */ $right) {
+		parent::__construct($pos);
 
-		$this->unaryOperator = $unaryOperator;
-		$this->subquery = $subquery;
+		$this->operator = $operator;
+		$this->left = $left;
+		$this->right = $right;
+		$this->depth += max($left != null ? $left->depth : 0, $right != null ? $right->depth : 0);
 	}
 
 	/**
@@ -72,7 +78,7 @@ class tx_dbal_sql_tree_SimpleExpr extends tx_dbal_sql_tree_AbstractExpr {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseSimpleExpr($this);
+		$visitor->caseOperation($this);
 	}
 
 }

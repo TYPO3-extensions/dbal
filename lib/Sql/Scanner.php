@@ -26,7 +26,7 @@
  ***************************************************************/
 
 require_once(dirname(__FILE__) . '/Interfaces/Tokens.php');
-require_once(dirname(__FILE__) . '/class.tx_dbal_sql_position.php');
+require_once(dirname(__FILE__) . '/Position.php');
 
 /**
  * Lexical analyzer.
@@ -35,15 +35,14 @@ require_once(dirname(__FILE__) . '/class.tx_dbal_sql_position.php');
  * Swiss Federal Institute of Technology. Nice to use that again ;-)
  * @link http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
- * @category    Parser
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @category    Scanner
+ * @package     SQL
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_Scanner implements Sql_Interfaces_Tokens {
+class Sql_Scanner implements Sql_Interfaces_Tokens {
 
 	/**
 	 * Current lexeme
@@ -89,7 +88,7 @@ class tx_dbal_sql_Scanner implements Sql_Interfaces_Tokens {
 	private $column = 0;
 
 	/**
-	 * @var tx_dbal_sql_Global
+	 * @var Sql_Global
 	 */
 	protected $global;
 
@@ -108,9 +107,10 @@ class tx_dbal_sql_Scanner implements Sql_Interfaces_Tokens {
 	/**
 	 * Default constructor
 	 *
-	 * @param tx_dbal_System_Io_Reader $in Input stream
+	 * @param Sql_Global $global
+	 * @param System_Io_Reader $in Input stream
 	 */
-	public function __construct(tx_dbal_sql_Global $global, System_Io_StringReader $in) {
+	public function __construct(Sql_Global $global, System_Io_StringReader $in) {
 		$this->global = $global;
 		$this->in = $in;
 		$this->buffer = '';
@@ -136,7 +136,7 @@ class tx_dbal_sql_Scanner implements Sql_Interfaces_Tokens {
 		//}
 
 		// Initialize the lexeme's position
-		$this->start = tx_dbal_sql_Position::encode($this->line, $this->column);
+		$this->start = Sql_Position::encode($this->line, $this->column);
 		// Read the lexeme
 		$this->token = $this->readToken();
 	}
@@ -785,7 +785,7 @@ class tx_dbal_sql_Scanner implements Sql_Interfaces_Tokens {
 	 *
 	 * @param integer $token
 	 * @return string
-	 * @throws tx_dbal_sql_error_UnknownToken
+	 * @throws Sql_Exceptions_UnknownToken
 	 * @static
 	 */
 	public static function tokenClass($token) {

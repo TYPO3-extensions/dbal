@@ -27,17 +27,40 @@
 
 
 /**
- * A '*' tree.
+ * Abstract class for the tree nodes of the abstract grammar.
  *
- * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * The whole parser is based on compilation course (LAMP) I attended at
+ * Swiss Federal Institute of Technology. Nice to use that again ;-)
+ * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
+ *
+ * @category    Parser
+ * @package     SQL
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_Star extends tx_dbal_sql_AbstractTree {
+abstract class Sql_AbstractTree {
+
+	/**
+	 * @var integer
+	 */
+	public $pos;
+
+	/**
+	 * @var integer
+	 */
+	public $depth;
+
+	/**
+	 * @var Sql_Type
+	 */
+	public $type;
+
+	/**
+	 * @var Sql_Symbol
+	 */
+	public $symbol;
 
 	/**
 	 * Default constructor.
@@ -45,18 +68,34 @@ class tx_dbal_sql_tree_Star extends tx_dbal_sql_AbstractTree {
 	 * @param integer $pos
 	 */
 	public function __construct($pos) {
-		parent::__construct($pos);
+		$this->pos = $pos;
+		$this->depth = 1;
 	}
 
 	/**
-	 * Applies the visitor onto this class.
+	 * Gets the maximal depth of an array of {@see Sql_AbstractTree}.
+	 *
+	 * @param Sql_AbstractTree[] $trees
+	 * @return integer
+	 */
+	public function getDepth(array $trees) {
+		$depth = 0;
+		foreach ($trees as $tree) {
+			if ($tree->depth > $depth) {
+				$depth = $tree->depth;
+			}
+		}
+		return $depth;
+	}
+
+	/**
+	 * Applies the visitor.
 	 *
 	 * @param Sql_Interfaces_Visitor $visitor
 	 * @return void
+	 * @abstract
 	 */
-	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseStar($this);
-	}
+	public abstract function apply(Sql_Interfaces_Visitor $visitor);
 
 }
 

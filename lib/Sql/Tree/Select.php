@@ -27,31 +27,58 @@
 
 
 /**
- * This class provides methods to show error and debug messages.
+ * A SELECT tree.
  *
- * The whole parser is based on compilation course (LAMP) I attended at
- * Swiss Federal Institute of Technology. Nice to use that again ;-)
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
- *
- * @category    Parser
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @category    Tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_Global implements t3lib_Singleton {
+class Sql_Tree_Select extends Sql_AbstractTree {
 
-	public function error($position, $message) {
-		$str = '';
-		$str .= tx_dbal_sql_Position::line($position);
-		$str .= ':';
-		$str .= tx_dbal_sql_Position::column($position);
-		$str .= ': ';
-		$str .= $message;
+	/**
+	 * @var Sql_Tree_SelectExpr[]
+	 */
+	public $selectExpr;
 
-		t3lib_div::debug($str, 'SQL Error');
+	/**
+	 * @var Sql_Tree_TableReference[]
+	 */
+	public $tableReferences;
+
+	/**
+	 * @var Sql_Tree_Expr
+	 */
+	public $whereCondition;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param Sql_Tree_SelectExpr[] $fields
+	 * @param Sql_Tree_TableReference[] $tableReferences
+	 * @param Sql_Tree_Expr $whereCondition
+	 */
+	public function __construct($pos, array $selectExpr, array $tableReferences, /* Sql_Tree_Expr */ $whereCondition) {
+		parent::__construct($pos);
+
+		$this->selectExpr = $selectExpr;
+		$this->tableReferences = $tableReferences;
+		$this->whereCondition = $whereCondition;
+		//$this->depth += max($left != null ? $left->depth : 0, $right != null ? $right->depth : 0);
+	}
+
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param Sql_Interfaces_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(Sql_Interfaces_Visitor $visitor) {
+		$visitor->caseSelect($this);
 	}
 
 }

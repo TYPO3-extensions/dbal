@@ -27,48 +27,25 @@
 
 
 /**
- * An operation tree.
+ * A '*' tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_Operation extends tx_dbal_sql_AbstractTree {
-
-	/**
-	 * @var integer
-	 */
-	public $operator;
-
-	/**
-	 * @var tx_dbal_sql_AbstractTree
-	 */
-	public $left;
-
-	/**
-	 * @var tx_dbal_sql_AbstractTree
-	 */
-	public $right;
+class Sql_Tree_Star extends Sql_AbstractTree {
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
-	 * @param integer $operator
-	 * @param tx_dbal_sql_AbstractTree $left
-	 * @param tx_dbal_sql_AbstractTree $right
 	 */
-	public function __construct($pos, $operator, /* tx_dbal_sql_AbstractTree */ $left, /* tx_dbal_sql_AbstractTree */ $right) {
+	public function __construct($pos) {
 		parent::__construct($pos);
-
-		$this->operator = $operator;
-		$this->left = $left;
-		$this->right = $right;
-		$this->depth += max($left != null ? $left->depth : 0, $right != null ? $right->depth : 0);
 	}
 
 	/**
@@ -78,7 +55,7 @@ class tx_dbal_sql_tree_Operation extends tx_dbal_sql_AbstractTree {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseOperation($this);
+		$visitor->caseStar($this);
 	}
 
 }

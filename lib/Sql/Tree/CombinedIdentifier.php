@@ -27,26 +27,17 @@
 
 
 /**
- * A bad tree.
+ * An combined identifier (table + field) tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_Bad extends tx_dbal_sql_AbstractTree {
-
-	/**
-	 * Default constructor.
-	 *
-	 * @param integer $pos
-	 */
-	public function __construct($pos) {
-		parent::__construct($pos);
-	}
+class Sql_Tree_CombinedIdentifier extends Sql_Tree_AbstractExpr {
 
 	/**
 	 * Applies the visitor onto this class.
@@ -55,7 +46,7 @@ class tx_dbal_sql_tree_Bad extends tx_dbal_sql_AbstractTree {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseBad($this);
+		$visitor->caseCombinedIdentifier($this);
 	}
 
 }

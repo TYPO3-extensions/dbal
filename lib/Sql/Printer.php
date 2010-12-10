@@ -35,14 +35,13 @@ require_once(dirname(__FILE__) . '/Interfaces/Visitor.php');
  * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
  *
  * @category	Parser
- * @package	 TYPO3
- * @subpackage  tx_dbal\sql
- * @author	  Xavier Perseguers <typo3@perseguers.ch>
+ * @package	    Sql
+ * @author	    Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
- * @license	 http://www.gnu.org/copyleft/gpl.html
- * @version	 SVN: $Id$
+ * @license	    http://www.gnu.org/copyleft/gpl.html
+ * @version	    SVN: $Id$
  */
-class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
+class Sql_Printer implements Sql_Interfaces_Visitor {
 
 	/**
 	 * @var string
@@ -78,7 +77,7 @@ class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 	 */
 	public function output($obj) {
 		switch (TRUE) {
-			case is_a($obj, tx_dbal_sql_AbstractTree):
+			case is_a($obj, Sql_AbstractTree):
 				$obj->apply($this);
 				break;
 			case is_array($obj):
@@ -96,7 +95,7 @@ class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 	/**
 	 * Outputs an array of SQL statements.
 	 *
-	 * @param tx_dbal_sql_AbstractTree[] $trees
+	 * @param Sql_AbstractTree[] $trees
 	 * @return VisitorInterface
 	 */
 	public function outputStatements(array $trees) {
@@ -158,52 +157,52 @@ class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 	 ************************************/
 
 	/**
-	 * @param tx_dbal_sql_Bad $tree
+	 * @param Sql_Tree_Bad $tree
 	 * @return void
 	 */
-	public function caseBad(tx_dbal_sql_tree_Bad $tree) {
+	public function caseBad(Sql_Tree_Bad $tree) {
 		$this->output('<<bad>>');
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_BooleanPrimary $tree
+	 * @param Sql_Tree_BooleanPrimary $tree
 	 * @return void
 	 */
-	public function caseBooleanPrimary(tx_dbal_sql_tree_BooleanPrimary $tree) {
+	public function caseBooleanPrimary(Sql_Tree_BooleanPrimary $tree) {
 		$this->output($tree->left);
 		$this->output(' comparisonOperator(')->output($tree->comparisonOperator)->output(') ');
 		$this->output($tree->right);
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_CombinedIdentifier $tree
+	 * @param Sql_Tree_CombinedIdentifier $tree
 	 * @return void
 	 */
-	public function caseCombinedIdentifier(tx_dbal_sql_tree_CombinedIdentifier $tree) {
+	public function caseCombinedIdentifier(Sql_Tree_CombinedIdentifier $tree) {
 		$this->output($tree->left)->output('.')->output($tree->right);
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_Identifier $obj
+	 * @param Sql_Tree_Identifier $obj
 	 * @return void
 	 */
-	public function caseIdentifier(tx_dbal_sql_tree_Identifier $tree) {
+	public function caseIdentifier(Sql_Tree_Identifier $tree) {
 		$this->output($tree->name);
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_IntLiteral $obj
+	 * @param Sql_Tree_IntLiteral $obj
 	 * @return void
 	 */
-	public function caseIntLiteral(tx_dbal_sql_tree_IntLiteral $tree) {
+	public function caseIntLiteral(Sql_Tree_IntLiteral $tree) {
 		$this->output($tree->value);
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_Operation $obj
+	 * @param Sql_Tree_Operation $obj
 	 * @return void
 	 */
-	public function caseOperation(tx_dbal_sql_tree_Operation $tree) {
+	public function caseOperation(Sql_Tree_Operation $tree) {
 		$this->output('(')->indent()->outputNewLine();
 		$this->output($tree->left);
 		$this->unindent()->outputNewLine();
@@ -215,10 +214,10 @@ class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_Select $obj
+	 * @param Sql_Tree_Select $obj
 	 * @return void
 	 */
-	public function caseSelect(tx_dbal_sql_tree_Select $tree) {
+	public function caseSelect(Sql_Tree_Select $tree) {
 		$this->output('SELECT')->indent()->outputNewLine();
 		$this->output($tree->selectExpr);
 		$this->unindent()->outputNewLine();
@@ -234,10 +233,10 @@ class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_SelectExpr $tree
+	 * @param Sql_Tree_SelectExpr $tree
 	 * @return void
 	 */
-	public function caseSelectExpr(tx_dbal_sql_tree_SelectExpr $tree) {
+	public function caseSelectExpr(Sql_Tree_SelectExpr $tree) {
 		if ($tree->table) {
 			$this->output($tree->table)->output('.');
 		}
@@ -248,34 +247,34 @@ class tx_dbal_sql_Printer implements Sql_Interfaces_Visitor {
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_SimpleExpr $tree
+	 * @param Sql_Tree_SimpleExpr $tree
 	 * @return void
 	 */
-	public function caseSimpleExpr(tx_dbal_sql_tree_SimpleExpr $tree) {
+	public function caseSimpleExpr(Sql_Tree_SimpleExpr $tree) {
 		// TODO
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_Star $tree
+	 * @param Sql_Tree_Star $tree
 	 * @return void
 	 */
-	public function caseStar(tx_dbal_sql_tree_Star $tree) {
+	public function caseStar(Sql_Tree_Star $tree) {
 		$this->output('*');
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_StringLiteral $tree
+	 * @param Sql_Tree_StringLiteral $tree
 	 * @return void
 	 */
-	public function caseStringLiteral(tx_dbal_sql_tree_StringLiteral $tree) {
+	public function caseStringLiteral(Sql_Tree_StringLiteral $tree) {
 		$this->output($tree->value);
 	}
 
 	/**
-	 * @param tx_dbal_sql_tree_TableFactor $tree
+	 * @param Sql_Tree_TableFactor $tree
 	 * @return void
 	 */
-	public function caseTableFactor(tx_dbal_sql_tree_TableFactor $tree) {
+	public function caseTableFactor(Sql_Tree_TableFactor $tree) {
 		$this->output($tree->tableName);
 		if ($tree->alias) {
 			$this->output(' AS ')->output($tree->alias);

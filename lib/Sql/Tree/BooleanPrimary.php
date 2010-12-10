@@ -27,42 +27,46 @@
 
 
 /**
- * An abstract expr tree.
+ * A boolean_primary tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-abstract class tx_dbal_sql_tree_AbstractExpr extends tx_dbal_sql_AbstractTree {
+class Sql_Tree_BooleanPrimary extends Sql_Tree_AbstractExpr {
 
 	/**
-	 * @remark tx_dbal_sql_tree_Identifier used by tx_dbal_sql_CombinedIdentifier
-	 * @var tx_dbal_sql_tree_AbstractExpr|tx_dbal_sql_tree_Identifier
+	 * @var integer
 	 */
-	public $left;
-
-	/**
-	 * @remark tx_dbal_sql_tree_Identifier used by tx_dbal_sql_CombinedIdentifier
-	 * @var tx_dbal_sql_tree_AbstractExpr|tx_dbal_sql_tree_Identifier
-	 */
-	public $right;
+	public $comparisonOperator;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
-	 * @param tx_dbal_sql_tree_AbstractExpr|tx_dbal_sql_tree_Identifier $left
-	 * @param tx_dbal_sql_tree_AbstractExpr|tx_dbal_sql_tree_Identifier $right
+	 * @param Sql_AbstractTree $left
+	 * @param integer $comparisonOperator
+	 * @param Sql_AbstractTree $right
+	 *
 	 */
-	public function __construct($pos, $left, $right = null) {
-		parent::__construct($pos);
+	public function __construct($pos, Sql_AbstractTree $left, $comparisonOperator, Sql_AbstractTree $right) {
+		parent::__construct($pos, $left, $right);
 
-		$this->left = $left;
-		$this->right = $right;
+		$this->comparisonOperator = $comparisonOperator;
+	}
+
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param Sql_Interfaces_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(Sql_Interfaces_Visitor $visitor) {
+		$visitor->caseBooleanPrimary($this);
 	}
 
 }

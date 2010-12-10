@@ -27,47 +27,42 @@
 
 
 /**
- * An select_expr tree.
+ * A simple_expr tree.
  *
  * @category    Tree
- * @package     TYPO3
- * @subpackage  tx_dbal\sql\tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class tx_dbal_sql_tree_SelectExpr extends tx_dbal_sql_AbstractTree {
+class Sql_Tree_SimpleExpr extends Sql_Tree_AbstractExpr {
 
 	/**
-	 * @var tx_dbal_sql_tree_Identifier
+	 * @var integer
 	 */
-	public $table;
+	public $unaryOperator;
 
 	/**
-	 * @var tx_dbal_sql_tree_Identifier|tx_dbal_sql_tree_Star
+	 * @var Sql_Tree_Select
 	 */
-	public $field;
-
-	/**
-	 * @var tx_dbal_sql_tree_Identifier
-	 */
-	public $alias;
+	public $subquery;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
-	 * @param tx_dbal_sql_tree_Identifier $table
-	 * @param tx_dbal_sql_tree_Identifier|tx_dbal_sql_tree_Star $field
-	 * @param tx_dbal_sql_tree_Identifier $alias
+	 * @param integer $unaryOperator
+	 * @param Sql_Tree_AbstractExpr $simpleExpr
+	 * @param Sql_Tree_Select $subquery
+	 *
 	 */
-	public function __construct($pos, /* tx_dbal_sql_tree_Identifier */ $table, $field, /* tx_dbal_sql_tree_Identifier */ $alias = null) {
-		parent::__construct($pos);
+	public function __construct($pos, $unaryOperator, /* Sql_Tree_AbstractExpr */ $simpleExpr, /* Sql_Tree_Select */ $subquery = null) {
+		parent::__construct($pos, $simpleExpr, null);
 
-		$this->table = $table;
-		$this->field = $field;
-		$this->alias = $alias;
+		$this->unaryOperator = $unaryOperator;
+		$this->subquery = $subquery;
 	}
 
 	/**
@@ -77,7 +72,7 @@ class tx_dbal_sql_tree_SelectExpr extends tx_dbal_sql_AbstractTree {
 	 * @return void
 	 */
 	public function apply(Sql_Interfaces_Visitor $visitor) {
-		$visitor->caseSelectExpr($this);
+		$visitor->caseSimpleExpr($this);
 	}
 
 }

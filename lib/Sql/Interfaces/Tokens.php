@@ -30,8 +30,8 @@
  * This interface contains all classes of lexemes.
  *
  * @category    Interfaces
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @package     SQL
+ * @subpackage  Interfaces
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html

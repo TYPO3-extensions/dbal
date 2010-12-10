@@ -27,76 +27,58 @@
 
 
 /**
- * Abstract class for the tree nodes of the abstract grammar.
+ * An select_expr tree.
  *
- * The whole parser is based on compilation course (LAMP) I attended at
- * Swiss Federal Institute of Technology. Nice to use that again ;-)
- * @see http://lamp.epfl.ch/teaching/archive/compilation/2002/project/assignments/1/instructions_header_web.shtml
- *
- * @category    Parser
- * @package     TYPO3
- * @subpackage  tx_dbal\sql
+ * @category    Tree
+ * @package     SQL
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-abstract class tx_dbal_sql_AbstractTree {
+class Sql_Tree_SelectExpr extends Sql_AbstractTree {
 
 	/**
-	 * @var integer
+	 * @var Sql_Tree_Identifier
 	 */
-	public $pos;
+	public $table;
 
 	/**
-	 * @var integer
+	 * @var Sql_Tree_Identifier|Sql_Tree_Star
 	 */
-	public $depth;
+	public $field;
 
 	/**
-	 * @var tx_dbal_sql_Type
+	 * @var Sql_Tree_Identifier
 	 */
-	public $type;
-
-	/**
-	 * @var tx_dbal_sql_Symbol
-	 */
-	public $symbol;
+	public $alias;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param integer $pos
+	 * @param Sql_Tree_Identifier $table
+	 * @param Sql_Tree_Identifier|Sql_Tree_Star $field
+	 * @param Sql_Tree_Identifier $alias
 	 */
-	public function __construct($pos) {
-		$this->pos = $pos;
-		$this->depth = 1;
+	public function __construct($pos, /* Sql_Tree_Identifier */ $table, $field, /* Sql_Tree_Identifier */ $alias = null) {
+		parent::__construct($pos);
+
+		$this->table = $table;
+		$this->field = $field;
+		$this->alias = $alias;
 	}
 
 	/**
-	 * Gets the maximal depth of an array of {@see tx_dbal_sql_Tree}.
-	 *
-	 * @param tx_dbal_sql_Tree[] $trees
-	 * @return integer
-	 */
-	public function getDepth(array $trees) {
-		$depth = 0;
-		foreach ($trees as $tree) {
-			if ($tree->depth > $depth) {
-				$depth = $tree->depth;
-			}
-		}
-		return $depth;
-	}
-
-	/**
-	 * Applies the visitor.
+	 * Applies the visitor onto this class.
 	 *
 	 * @param Sql_Interfaces_Visitor $visitor
 	 * @return void
-	 * @abstract
 	 */
-	public abstract function apply(Sql_Interfaces_Visitor $visitor);
+	public function apply(Sql_Interfaces_Visitor $visitor) {
+		$visitor->caseSelectExpr($this);
+	}
 
 }
 
