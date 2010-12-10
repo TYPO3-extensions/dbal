@@ -37,7 +37,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-class TokenExpectedException extends t3lib_exception {
+class TokenExpectedException extends Exception {
 
 	/**
 	 * Default constructor.

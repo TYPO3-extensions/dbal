@@ -27,8 +27,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once(dirname(__FILE__) . '/Reader.php');
+
 /**
- * Abstract class for reading character streams.
+ * Dummy class for reading from string of characters.
  *
  * @category    System
  * @package     TYPO3
@@ -38,7 +40,41 @@
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-abstract class tx_dbal_System_Io_Reader {
+class System_Io_StringReader extends System_Io_Reader {
+
+	/**
+	 * @var string
+	 */
+	private $_string;
+
+	/**
+	 * @var int
+	 */
+	private $mark = 0;
+
+	/**
+	 * @var int
+	 */
+	private $currPos = 0;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param string $string
+	 */
+	public function __construct($string) {
+		$this->_string = $string;
+	}
+
+	/**
+	 * Moves stream position relative to current position.
+	 *
+	 * @param integer $n
+	 * @return void
+	 */
+	public function skip($n) {
+		$this->currPos += $n;
+	}
 
 	/**
 	 * Reads data from source.
@@ -49,32 +85,37 @@ abstract class tx_dbal_System_Io_Reader {
 	 * @param integer $len
 	 * @return string
 	 */
-	public abstract function read($len = null);
-
-	/**
-	 * Returns the filename, url, etc. that is being read from.
-	 *
-	 * @return string
-	 */
-	public abstract function getResource();
-
-	/**
-	 * Moves stream position relative to current position.
-	 *
-	 * @param integer $n
-	 * @return void
-	 */
-	public function skip($n) {
+	public function read($len = null) {
+		if ($len === null) {
+			return $this->_string;
+		} else {
+			if ($this->currPos >= strlen($this->_string)) {
+				return -1;	// EOF
+			}
+			$out = substr($this->_string, $this->currPos, $len);
+			$this->currPos += $len;
+			return $out;
+		}
 	}
 
 	/**
-	 * If supported, places a "marker" (like a bookmark) at current stream position.
+	 * Returns the string that is being read from.
+	 *
+	 * @return string
+	 */
+	public function getResource() {
+		return '(string) "' . $this->_string . '"';
+	}
+
+	/**
+	 * Places a "marker" (like a bookmark) at current stream position.
 	 * A subsequent call to reset() will move stream position back
-	 * to last marker (if supported).
+	 * to last marker.
 	 *
 	 * @return void
 	 */
 	public function mark() {
+		$this->mark = $this->currPos;
 	}
 
 	/**
@@ -83,6 +124,7 @@ abstract class tx_dbal_System_Io_Reader {
 	 * @return void
 	 */
 	public function reset() {
+		$this->currPos = $this->mark;
 	}
 
 	/**
@@ -91,7 +133,7 @@ abstract class tx_dbal_System_Io_Reader {
 	 * @return boolean
 	 */
 	public function markSupported() {
-		return false;
+		return TRUE;
 	}
 
 	/**
@@ -100,7 +142,8 @@ abstract class tx_dbal_System_Io_Reader {
 	 * @return void
 	 * @throws IOException if there is an error closing stream
 	 */
-	public abstract function close();
+	public function close() {
+	}
 
 	/**
 	 * Is stream ready for reading.

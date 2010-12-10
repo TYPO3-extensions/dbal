@@ -27,7 +27,7 @@ $BE_USER->modAccess($MCONF, 1);
 
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/interfaces/TokensInterface.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_global.php');
-require_once(t3lib_extMgm::extPath('dbal') . 'lib/system/io/class.tx_dbal_system_io_stringreader.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/system/io/StringReader.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_parser.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/sql/class.tx_dbal_sql_printer.php');
 
@@ -106,7 +106,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements TokensInterface {
 		/* @var tx_dbal_sql_Global $global */
 
 		for ($i = 0; $i < $loops; $i++) {
-			$inputStream = new tx_dbal_System_Io_StringReader($sql);
+			$inputStream = new System_Io_StringReader($sql);
 			/* @var tx_dbal_System_Io_StringReader $inputStream */
 			$scanner = new tx_dbal_sql_Scanner($global, $inputStream);
 			/* @var tx_dbal_sql_Scanner $scanner */
@@ -119,7 +119,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements TokensInterface {
 		$content .= '<p>' . $loops . ' loops: ' . (($end - $start) * 1000) . ' ms</p>';
 
 		/* @var tx_dbal_sql_Global $global */
-		$inputStream = new tx_dbal_System_Io_StringReader($sql);
+		$inputStream = new System_Io_StringReader($sql);
 		/* @var tx_dbal_System_Io_StringReader $inputStream */
 		$scanner = new tx_dbal_sql_Scanner($global, $inputStream);
 		/* @var tx_dbal_sql_Scanner $scanner */
@@ -150,7 +150,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements TokensInterface {
 
 		$start = microtime(true);
 
-		$inputStream = new tx_dbal_System_Io_StringReader($sql);
+		$inputStream = new System_Io_StringReader($sql);
 		/* @var tx_dbal_System_Io_StringReader $inputStream */
 		$parser = new tx_dbal_sql_Parser($global, $inputStream);
 		/* @var tx_dbal_sql_Parser $parser */

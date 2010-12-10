@@ -94,7 +94,7 @@ class tx_dbal_sql_Scanner implements TokensInterface {
 
 	/**
 	 * Input stream
-	 * @var tx_dbal_System_Io_Reader
+	 * @var System_Io_StringReader
 	 */
 	private $in;
 
@@ -109,7 +109,7 @@ class tx_dbal_sql_Scanner implements TokensInterface {
 	 *
 	 * @param tx_dbal_System_Io_Reader $in Input stream
 	 */
-	public function __construct(tx_dbal_sql_Global $global, tx_dbal_System_Io_Reader $in) {
+	public function __construct(tx_dbal_sql_Global $global, System_Io_StringReader $in) {
 		$this->global = $global;
 		$this->in = $in;
 		$this->buffer = '';
