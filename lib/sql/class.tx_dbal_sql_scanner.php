@@ -1090,9 +1090,4 @@ class tx_dbal_sql_Scanner implements tx_dbal_sql_Tokens {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/class.tx_dbal_sql_scanner.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/class.tx_dbal_sql_scanner.php']);
-}
-
 ?>

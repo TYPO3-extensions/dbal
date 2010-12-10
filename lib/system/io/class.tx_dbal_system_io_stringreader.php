@@ -154,9 +154,4 @@ class tx_dbal_System_Io_StringReader extends tx_dbal_System_Io_Reader {
 
 }
 
-
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/system/io/class.tx_dbal_system_io_stringreader.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/system/io/class.tx_dbal_system_io_stringreader.php']);
-}
-
 ?>

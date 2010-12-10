@@ -50,9 +50,4 @@ class tx_dbal_sql_error_TokenExpected extends t3lib_exception {
 
 }
 
-
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/error/class.tx_dbal_sql_error_tokenexpected.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/dbal/lib/sql/error/class.tx_dbal_sql_error_tokenexpected.php']);
-}
-
 ?>
