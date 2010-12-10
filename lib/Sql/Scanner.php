@@ -101,6 +101,11 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	/**
 	 * @var integer
 	 */
+	private $length;
+
+	/**
+	 * @var integer
+	 */
 	private $currPos;
 
 	/**
@@ -117,6 +122,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	public function __construct($sql) {
 		$this->errors  = array();
 		$this->sql     = $sql;
+		$this->length  = strlen($sql);
 		$this->currPos = 0;
 		$this->buffer  = '';
 
@@ -1091,7 +1097,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 		}
 
 		// [start] Read next character
-		if ($this->currPos >= strlen($this->sql)) {
+		if ($this->currPos >= $this->length) {
 			$this->ch = self::EOF;
 		} else {
 			$this->ch = $this->sql{$this->currPos};
@@ -1101,7 +1107,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 
 		if (($this->oldCh === "\r") && ($this->ch === "\n")) {
 			// [start] Read next character
-			if ($this->currPos >= strlen($this->sql)) {
+			if ($this->currPos >= $this->length) {
 				$this->ch = self::EOF;
 			} else {
 				$this->ch = $this->sql{$this->currPos};
