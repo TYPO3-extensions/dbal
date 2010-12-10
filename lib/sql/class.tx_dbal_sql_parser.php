@@ -52,11 +52,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	 */
 	protected function error($expected) {
 		if (is_integer($expected)) {
-			$exception = t3lib_div::makeInstance('tx_dbal_sql_error_TokenExpected', $this->tokenClass($expected));
-			/**
-			 * @var tx_dbal_sql_error_TokenExpected $exception
-			 */
-			throw $exception;
+			throw new tx_dbal_sql_error_TokenExpected($this->tokenClass($expected));
 		} else {
 			$message = 'Invalid syntax. Expected: ' . $expected . ', found: lexeme ' . $this->representation();
 			throw new Exception($message);
@@ -215,7 +211,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			$this->accept(self::T_LIMIT);
 		}
 
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_Select', $this->start, $selectExpressions, $tableReferences, $whereCondition);
+		return new tx_dbal_sql_tree_Select($this->start, $selectExpressions, $tableReferences, $whereCondition);
 	}
 
 	/**
@@ -231,7 +227,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		if ($this->token == self::T_IDENTIFIER) {
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
-			$tableOrField = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+			$tableOrField = new tx_dbal_sql_tree_Identifier($this->start, $name);
 
 			if ($this->token == self::T_DOT) {
 				$table = $tableOrField;
@@ -240,17 +236,17 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 				if ($this->token == self::T_IDENTIFIER) {
 					$name = $this->chars;
 					$this->accept(self::T_IDENTIFIER);
-					$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+					$field = new tx_dbal_sql_tree_Identifier($this->start, $name);
 				} else {
 					$this->accept(self::T_STAR);
-					$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Star', $this->start);
+					$field = new tx_dbal_sql_tree_Star($this->start);
 				}
 			} else {
 				$field = $tableOrField;
 			}
 		} else {
 			$this->accept(self::T_STAR);
-			$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Star', $this->start);
+			$field = new tx_dbal_sql_tree_Star($this->start);
 		}
 
 		$alias = null;
@@ -258,10 +254,10 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			$this->acceptIf(self::T_AS);
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
-			$alias = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+			$alias = new tx_dbal_sql_tree_Identifier($this->start, $name);
 		}
 
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_SelectExpr', $this->start, $table, $field, $alias);
+		return new tx_dbal_sql_tree_SelectExpr($this->start, $table, $field, $alias);
 	}
 
 	/**
@@ -288,17 +284,17 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	protected function parseTableFactor() {
 		$name = $this->chars;
 		$this->accept(self::T_IDENTIFIER);
-		$tableName = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+		$tableName = new tx_dbal_sql_tree_Identifier($this->start, $name);
 		$alias = null;
 
 		if ($this->token == self::T_AS || $this->token == self::T_IDENTIFIER) {
 			$this->acceptIf(self::T_AS);
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
-			$alias = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+			$alias = new tx_dbal_sql_tree_Identifier($this->start, $name);
 		}
 
-		return t3lib_div::makeInstance('tx_dbal_sql_tree_TableFactor', $this->start, $tableName, $alias);
+		return new tx_dbal_sql_tree_TableFactor($this->start, $tableName, $alias);
 	}
 
 	/**
@@ -333,7 +329,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 	protected function parseExpr() {
 		if ($this->token == self::T_NOT || $this->token == self::T_LOGICNOT) {
 			$this->accept($this->token);
-			return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, self::T_NOT, $this->parseExpr());
+			return new tx_dbal_sql_tree_SimpleExpr($this->start, self::T_NOT, $this->parseExpr());
 		} else {
 			$expr = $this->parseBooleanPrimary();
 			/*
@@ -351,7 +347,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 				case self::T_XOR:       // 'XOR'
 					$operator = $this->token;
 					$this->accept($this->token);
-					return t3lib_div::makeInstance('tx_dbal_sql_tree_Operation', $this->start, $operator, $expr, $this->parseExpr());
+					return new tx_dbal_sql_tree_Operation($this->start, $operator, $expr, $this->parseExpr());
 			}
 
 			return $expr;
@@ -387,8 +383,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		if (in_array($this->token, $comparisonOperators)) {
 			$comparisonOperator = $this->token;
 			$this->accept($comparisonOperator);
-			return t3lib_div::makeInstance(
-				'tx_dbal_sql_tree_BooleanPrimary',
+			return new tx_dbal_sql_tree_BooleanPrimary(
 				$this->start,
 				$predicate,
 				$comparisonOperator,
@@ -455,7 +450,7 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 		while (in_array($this->token, $operators)) {
 			$operator = $this->token;
 			// TODO: take priority of operators into account
-			$simpleExpr = t3lib_div::makeInstance('tx_dbal_sql_tree_Operation', $operator, $simpleExpr, $this->parseBitExpr());
+			$simpleExpr = new tx_dbal_sql_tree_Operation($operator, $simpleExpr, $this->parseBitExpr());
 		}
 
 		return $simpleExpr;
@@ -486,15 +481,15 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 			case self::T_STRING:
 				$value = $this->chars;
 				$this->accept(self::T_STRING);
-				return t3lib_div::makeInstance('tx_dbal_sql_tree_StringLiteral', $this->start, $value);
+				return new tx_dbal_sql_tree_StringLiteral($this->start, $value);
 			case self::T_NUMBER:
 				$value = $this->chars;
 				$this->accept(self::T_NUMBER);
-				return t3lib_div::makeInstance('tx_dbal_sql_tree_IntLiteral', $this->start, $value);
+				return new tx_dbal_sql_tree_IntLiteral($this->start, $value);
 			case self::T_IDENTIFIER:
 				$name = $this->chars;
 				$this->accept(self::T_IDENTIFIER);
-				$tableOrField = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+				$tableOrField = new tx_dbal_sql_tree_Identifier($this->start, $name);
 				$table = null;
 
 				if ($this->token == self::T_DOT) {
@@ -502,16 +497,16 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 					$this->accept(self::T_DOT);
 					$name = $this->chars;
 					$this->accept(self::T_IDENTIFIER);
-					$field = t3lib_div::makeInstance('tx_dbal_sql_tree_Identifier', $this->start, $name);
+					$field = new tx_dbal_sql_tree_Identifier($this->start, $name);
 				}
-				return $table ? t3lib_div::makeInstance('tx_dbal_sql_tree_CombinedIdentifier', $this->start, $table, $field) : $tableOrField;
+				return $table ? new tx_dbal_sql_tree_CombinedIdentifier($this->start, $table, $field) : $tableOrField;
 			case self::T_PLUS:
 			case self::T_MINUS:
 			case self::T_TILDE:
 			case self::T_LOGICNOT:
 			case self::T_BINARY:
 				$unaryOperator = $this->token;
-				return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, $unaryOperator, $this->parseSimpleExpr());
+				return new tx_dbal_sql_tree_SimpleExpr($this->start, $unaryOperator, $this->parseSimpleExpr());
 			case self::T_LPAREN:
 				$subquery = null;
 				$expr = null;
@@ -522,12 +517,12 @@ class tx_dbal_sql_Parser extends tx_dbal_sql_Scanner {
 					$expr = $this->parseExpr();
 				}
 				$this->accept(self::T_RPAREN);
-				return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, '', $expr, $subquery);
+				return new tx_dbal_sql_tree_SimpleExpr($this->start, '', $expr, $subquery);
 			case self::T_EXISTS:
 				$this->accept(self::T_EXISTS);
 				$subquery = $this->parseSubquery();
 				$this->accept(self::T_RPAREN);
-				return t3lib_div::makeInstance('tx_dbal_sql_tree_SimpleExpr', $this->start, 'EXISTS', null, $subquery);
+				return new tx_dbal_sql_tree_SimpleExpr($this->start, 'EXISTS', null, $subquery);
 			case self::T_CASE:
 				// TODO
 				break;
