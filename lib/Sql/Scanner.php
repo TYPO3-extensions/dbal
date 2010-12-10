@@ -64,6 +64,11 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	public $chars;
 
 	/**
+	 * @var array
+	 */
+	public $errors;
+
+	/**
 	 * Buffer to construct the lexeme's representation
 	 * @var string
 	 */
@@ -88,11 +93,6 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	private $column = 0;
 
 	/**
-	 * @var Sql_Global
-	 */
-	protected $global;
-
-	/**
 	 * Input stream
 	 * @var Sql_System_Io_StringReader
 	 */
@@ -107,11 +107,10 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 	/**
 	 * Default constructor
 	 *
-	 * @param Sql_Global $global
 	 * @param System_Io_Reader $in Input stream
 	 */
-	public function __construct(Sql_Global $global, Sql_System_Io_StringReader $in) {
-		$this->global = $global;
+	public function __construct(Sql_System_Io_StringReader $in) {
+		$this->errors = array();
 		$this->in = $in;
 		$this->buffer = '';
 		$this->nextCh();
@@ -231,14 +230,14 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 							if ($this->ch === $quoteChar || $this->ch === '\\') {
 								$this->buffer .= $this->ch;
 							} else {
-								$this->global->error($this->start, 'Invalid escape character');
+								$this->errors[$this->start] = 'Invalid escape character';
 								return self::BAD;
 							}
 						}
 						$this->nextCh();
 
 					} else {
-						$this->global->error($this->start, 'String not ended');
+						$this->errors[$this->start] = 'String not ended';
 						return self::BAD;
 					}
 				}
@@ -279,7 +278,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 				return self::T_IDENTIFIER;
 			}
 		} else {
-			$this->global->error($this->start, 'Invalid character');
+			$this->errors[$this->start] = 'Invalid character';
 			$this->nextCh();
 			return self::BAD;
 		}
@@ -1062,7 +1061,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 			case self::T_ZEROFILL                      : return 'ZEROFILL';
 
 			default:
-				throw new UnknownTokenException($token);
+				throw new Sql_Exceptions_UnknownToken($token);
 		}
 	}
 

@@ -68,7 +68,7 @@ class Sql_Parser extends Sql_Scanner {
 	 */
 	protected function error($expected) {
 		if (is_integer($expected)) {
-			throw new Sql_Exceptions_TokenExpected($this->tokenClass($expected));
+			throw new Sql_Exceptions_TokenExpected($this->start, $this->tokenClass($expected));
 		} else {
 			$message = 'Invalid syntax. Expected: ' . $expected . ', found: lexeme ' . $this->representation();
 			throw new Exception($message);
