@@ -1092,7 +1092,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 
 		// [start] Read next character
 		if ($this->currPos >= strlen($this->sql)) {
-			$this->ch = -1;	// EOF
+			$this->ch = self::EOF;
 		} else {
 			$this->ch = $this->sql{$this->currPos};
 			$this->currPos++;
@@ -1102,7 +1102,7 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 		if (($this->oldCh === "\r") && ($this->ch === "\n")) {
 			// [start] Read next character
 			if ($this->currPos >= strlen($this->sql)) {
-				$this->ch = -1;	// EOF
+				$this->ch = self::EOF;
 			} else {
 				$this->ch = $this->sql{$this->currPos};
 				$this->currPos++;
