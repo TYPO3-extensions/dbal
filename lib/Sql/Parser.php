@@ -467,7 +467,7 @@ class Sql_Parser extends Sql_Scanner {
 				);
 			default:
 				if ($invert) {
-					// Arbitrary expect 'IN' in order to throw an exception
+					// Arbitrarily expect 'IN' in order to throw an exception
 					// as token 'NOT' found but without any further supported
 					// token afterwards
 					$this->accept(self::T_IF);
@@ -542,10 +542,12 @@ class Sql_Parser extends Sql_Scanner {
 	protected function parseSimpleExpr() {
 		switch ($this->token) {
 			case self::T_STRING:
+				// Literal
 				$value = $this->chars;
 				$this->accept(self::T_STRING);
 				return new Sql_Tree_StringLiteral($this->start, $value);
 			case self::T_NUMBER:
+				// Literal
 				$value = $this->chars;
 				$this->accept(self::T_NUMBER);
 				return new Sql_Tree_IntLiteral($this->start, $value);
@@ -587,8 +589,7 @@ class Sql_Parser extends Sql_Scanner {
 				$this->accept(self::T_RPAREN);
 				return new Sql_Tree_SimpleExpr($this->start, 'EXISTS', null, $subquery);
 			case self::T_CASE:
-				// TODO
-				break;
+				return $this->parseCaseExpr();
 			default:
 				if ($this->token > self::OFFSET_FUNCTIONS) {
 					$functionName = self::$functions[$this->token]['name'];
@@ -607,6 +608,42 @@ class Sql_Parser extends Sql_Scanner {
 		}
 	}
 
+	/**
+	 * Parses a case_expr.
+	 *
+	 * case_expr :=
+	 *              "CASE" value "WHEN" compare_value "THEN" result
+	 *                           ["WHEN" compare_value "THEN" result ...]
+	 *              ["ELSE" result]
+	 *              "END"
+	 *
+	 * @return Sql_AbstractTree
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/control-flow-functions.html
+	 */
+	protected function parseCaseExpr() {
+		$compareValues = array();
+		$results = array();
+		$else = null;
+
+		$this->accept(self::T_CASE);
+		$value = $this->parseBitExpr();
+
+		do {
+			$this->accept(self::T_WHEN);
+			$compareValues[] = $this->parseBitExpr();
+			$this->accept(self::T_THEN);
+			$results[] = $this->parseBitExpr();
+		} while ($this->token == self::T_WHEN);
+
+		if ($this->token == self::T_ELSE) {
+			$this->accept(self::T_ELSE);
+			$else = $this->parseBitExpr();
+		}
+
+		$this->acccept(self::T_END);
+
+		return new Sql_Tree_CaseExpr($this->pos, $value, $compareValues, $results, $else);
+	}
 }
 
 ?>

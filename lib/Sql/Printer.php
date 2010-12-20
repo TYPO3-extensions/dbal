@@ -175,6 +175,26 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	}
 
 	/**
+	 * @param Sql_Tree_CaseExpr $tree
+	 * @return void
+	 */
+	public function caseCaseExpr(Sql_Tree_CaseExpr $tree) {
+		$this->output('CASE ');
+		$this->output($tree->left)->indent();
+		for ($i = 0; $i < count($tree->compareValues); $i++) {
+			$this->outputNewLine();
+			$this->output('WHEN ')->output($tree->compareValues[$i]);
+			$this->output(' THEN ')->output($tree->results[$i]);
+		}
+		if ($tree->else) {
+			$this->outputNewLine();
+			$this->output('ELSE ')->output($tree->else);
+		}
+		$this->unindent()->outputNewLine();
+		$this->output('END');
+	}
+
+	/**
 	 * @param Sql_Tree_CombinedIdentifier $tree
 	 * @return void
 	 */

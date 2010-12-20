@@ -27,33 +27,58 @@
 
 
 /**
- * This interface provides method for the visitor design pattern.
+ * A case_expr tree.
  *
- * @category    Interfaces
+ * @category    Tree
  * @package     SQL
- * @subpackage  Interfaces
+ * @subpackage  Tree
  * @author      Xavier Perseguers <typo3@perseguers.ch>
  * @copyright   Copyright 2010
  * @license     http://www.gnu.org/copyleft/gpl.html
  * @version     SVN: $Id$
  */
-interface Sql_Interfaces_Visitor {
+class Sql_Tree_CaseExpr extends Sql_Tree_AbstractExpr {
 
-	function caseBad(Sql_Tree_Bad $tree);
-	function caseBooleanPrimary(Sql_Tree_BooleanPrimary $tree);
-	function caseCaseExpr(Sql_Tree_CaseExpr $tree);
-	function caseCombinedIdentifier(Sql_Tree_CombinedIdentifier $tree);
-	function caseFunction(Sql_Tree_Function $tree);
-	function caseIdentifier(Sql_Tree_Identifier $tree);
-	function caseIntLiteral(Sql_Tree_IntLiteral $tree);
-	function caseOperation(Sql_Tree_Operation $tree);
-	function caseSelect(Sql_Tree_Select $tree);
-	function caseSelectExpr(Sql_Tree_SelectExpr $tree);
-	function caseSimpleExpr(Sql_Tree_SimpleExpr $tree);
-	function caseStar(Sql_Tree_Star $tree);
-	function caseStringLiteral(Sql_Tree_StringLiteral $tree);
-	function caseTableFactor(Sql_Tree_TableFactor $tree);
+	/**
+	 * @var Sql_Tree_AbstractExpr[]
+	 */
+	public $compareValues;
+
+	/**
+	 * @var Sql_Tree_AbstractExpr[]
+	 */
+	public $results;
+
+	/**
+	 * @var Sql_Tree_AbstractExpr
+	 */
+	public $else;
+
+	/**
+	 * Default constructor.
+	 *
+	 * @param integer $pos
+	 * @param Sql_Tree_AbstractExpr $value
+	 * @param Sql_Tree_AbstractExpr[] $compareValues
+	 * @param Sql_Tree_AbstractExpr[] $results
+	 * @param Sql_Tree_AbstractExpr $else
+	 */
+	public function __construct($pos, $value, array $compareValues, array $results, $else) {
+		parent::__construct($pos, $value, null);
+
+		$this->compareValues = $compareValues;
+		$this->results = $results;
+		$this->else = $else;
+	}
+
+	/**
+	 * Applies the visitor onto this class.
+	 *
+	 * @param Sql_Interfaces_Visitor $visitor
+	 * @return void
+	 */
+	public function apply(Sql_Interfaces_Visitor $visitor) {
+		$visitor->caseCaseExpr($this);
+	}
 
 }
-
-?>
