@@ -60,7 +60,7 @@ class Sql_Tree_Operation extends Sql_AbstractTree {
 	 * @param integer $pos
 	 * @param integer $operator
 	 * @param Sql_AbstractTree $left
-	 * @param Sql_AbstractTree $right
+	 * @param Sql_AbstractTree|array $right
 	 */
 	public function __construct($pos, $operator, /* Sql_AbstractTree */ $left, /* Sql_AbstractTree */ $right) {
 		parent::__construct($pos);

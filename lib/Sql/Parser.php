@@ -424,7 +424,56 @@ class Sql_Parser extends Sql_Scanner {
 	protected function parsePredicate() {
 		$bitExpr = $this->parseBitExpr();
 
-		// TODO
+		$invert = FALSE;
+		if ($this->token == self::T_NOT) {
+			$invert = TRUE;
+			$this->accept(self::T_NOT);
+		}
+		switch ($this->token) {
+			case self::T_IN:
+				$this->accept(self::T_IN);
+				$this->accept(self::T_LPAREN);
+				// TODO: Handle comma-separated list of expr (2nd case in grammar)
+				$subquery = $this->parseSubquery();
+				$this->accept(self::T_RPAREN);
+
+				return new Sql_Tree_Operation(
+					$this->start,
+					$invert ? 'NOT IN' : 'NOT',
+					$bitExpr,
+					$subquery
+				);
+			case self::T_BETWEEN:
+				$this->accept(self::T_BETWEEN);
+				$lower = $this->parseBitExpr();
+				$this->accept(self::T_AND);
+				$upper = $this->parseBitExpr();
+
+				return new Sql_Tree_Operation(
+					$this->start,
+					$invert ? 'NOT BETWEEN' : 'BETWEEN',
+					$bitExpr,
+					array($lower, $upper)
+				);
+			case self::T_LIKE:
+				$this->accept(self::T_LIKE);
+				$expr = $this->parseSimpleExpr();
+
+				return new Sql_Tree_Operation(
+					$this->start,
+					$invert ? 'NOT LIKE' : 'LIKE',
+					$bitExpr,
+					$expr
+				);
+			default:
+				if ($invert) {
+					// Arbitrary expect 'IN' in order to throw an exception
+					// as token 'NOT' found but without any further supported
+					// token afterwards
+					$this->accept(self::T_IF);
+				}
+		}
+
 		return $bitExpr;
 	}
 
@@ -464,7 +513,7 @@ class Sql_Parser extends Sql_Scanner {
 		while (in_array($this->token, $operators)) {
 			$operator = $this->token;
 			// TODO: take priority of operators into account
-			$simpleExpr = new Sql_Tree_Operation($operator, $simpleExpr, $this->parseBitExpr(), null);
+			$simpleExpr = new Sql_Tree_Operation($this->start, $operator, $simpleExpr, $this->parseBitExpr());
 		}
 
 		return $simpleExpr;
