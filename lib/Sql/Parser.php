@@ -642,7 +642,7 @@ class Sql_Parser extends Sql_Scanner {
 			$compareValues[] = $this->parseBitExpr();
 			$this->accept(self::T_THEN);
 			$results[] = $this->parseBitExpr();
-		} while ($this->acceptIf(self::T_WHEN));
+		} while ($this->token == self::T_WHEN);
 
 		if ($this->token == self::T_ELSE) {
 			$this->accept(self::T_ELSE);
