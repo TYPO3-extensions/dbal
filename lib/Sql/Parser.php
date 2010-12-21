@@ -433,15 +433,23 @@ class Sql_Parser extends Sql_Scanner {
 			case self::T_IN:
 				$this->accept(self::T_IN);
 				$this->accept(self::T_LPAREN);
-				// TODO: Handle comma-separated list of expr (2nd case in grammar)
-				$subquery = $this->parseSubquery();
+
+				if ($this->token == self::T_SELECT) {
+					$expressionsOrSubquery = $this->parseSubquery();
+				} else {
+					$expressionsOrSubquery = array();
+					do {
+						$expressionsOrSubquery[] = $this->parseExpr();
+					} while ($this->acceptIf(self::T_COMMA));
+				}
+
 				$this->accept(self::T_RPAREN);
 
 				return new Sql_Tree_Operation(
 					$this->start,
 					$invert ? 'NOT IN' : 'NOT',
 					$bitExpr,
-					$subquery
+					$expressionsOrSubquery
 				);
 			case self::T_BETWEEN:
 				$this->accept(self::T_BETWEEN);
@@ -512,6 +520,7 @@ class Sql_Parser extends Sql_Scanner {
 		);
 		while (in_array($this->token, $operators)) {
 			$operator = $this->token;
+			$this->accept($operator);
 			// TODO: take priority of operators into account
 			$simpleExpr = new Sql_Tree_Operation($this->start, $operator, $simpleExpr, $this->parseBitExpr());
 		}
@@ -633,7 +642,7 @@ class Sql_Parser extends Sql_Scanner {
 			$compareValues[] = $this->parseBitExpr();
 			$this->accept(self::T_THEN);
 			$results[] = $this->parseBitExpr();
-		} while ($this->token == self::T_WHEN);
+		} while ($this->acceptIf(self::T_WHEN));
 
 		if ($this->token == self::T_ELSE) {
 			$this->accept(self::T_ELSE);
