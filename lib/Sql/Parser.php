@@ -231,40 +231,26 @@ class Sql_Parser extends Sql_Scanner {
 	/**
 	 * Parses a select_expr.
 	 *
-	 * select_expr := [identifier "."] {identifier ["AS"] [identifier] | "*"}
+	 * select_expr := [identifier "."] {identifier ["AS"] [identifier] | "*" | simple_expr ["AS"] [identifier]}
 	 *
 	 * @return Sql_Tree_SelectExpr
 	 * @link http://dev.mysql.com/doc/refman/5.5/en/select.html
 	 */
 	protected function parseSelectExpr() {
 		$table = null;
+		$allowAlias = TRUE;
 		if ($this->token == self::T_IDENTIFIER) {
-			$name = $this->chars;
-			$this->accept(self::T_IDENTIFIER);
-			$tableOrField = new Sql_Tree_Identifier($this->start, $name);
-
-			if ($this->token == self::T_DOT) {
-				$table = $tableOrField;
-				$this->accept(self::T_DOT);
-
-				if ($this->token == self::T_IDENTIFIER) {
-					$name = $this->chars;
-					$this->accept(self::T_IDENTIFIER);
-					$field = new Sql_Tree_Identifier($this->start, $name);
-				} else {
-					$this->accept(self::T_STAR);
-					$field = new Sql_Tree_Star($this->start);
-				}
-			} else {
-				$field = $tableOrField;
-			}
-		} else {
+			list($table, $field, $allowAlias) = $this->parseIdentifier();
+		} elseif ($this->token == self::T_STAR) {
 			$this->accept(self::T_STAR);
 			$field = new Sql_Tree_Star($this->start);
+			$allowAlias = FALSE;
+		} else {
+			$field = $this->parseSimpleExpr();
 		}
 
 		$alias = null;
-		if ($this->token == self::T_AS || $this->token == self::T_IDENTIFIER) {
+		if ($allowAlias && ($this->token == self::T_AS || $this->token == self::T_IDENTIFIER)) {
 			$this->acceptIf(self::T_AS);
 			$name = $this->chars;
 			$this->accept(self::T_IDENTIFIER);
@@ -272,6 +258,40 @@ class Sql_Parser extends Sql_Scanner {
 		}
 
 		return new Sql_Tree_SelectExpr($this->start, $table, $field, $alias);
+	}
+
+	/**
+	 * Parses an identifier.
+	 *
+	 * @return array array($table, $field, $allowAlias)
+	 * @link http://dev.mysql.com/doc/refman/5.5/en/identifier-qualifiers.html
+	 */
+	protected function parseIdentifier() {
+		$table = null;
+		$allowAlias = TRUE;
+
+		$name = $this->chars;
+		$this->accept(self::T_IDENTIFIER);
+		$tableOrField = new Sql_Tree_Identifier($this->start, $name);
+
+		if ($this->token == self::T_DOT) {
+			$table = $tableOrField;
+			$this->accept(self::T_DOT);
+
+			if ($this->token == self::T_IDENTIFIER) {
+				$name = $this->chars;
+				$this->accept(self::T_IDENTIFIER);
+				$field = new Sql_Tree_Identifier($this->start, $name);
+			} else {
+				$this->accept(self::T_STAR);
+				$field = new Sql_Tree_Star($this->start);
+				$allowAlias = FALSE;
+			}
+		} else {
+			$field = $tableOrField;
+		}
+
+		return array($table, $field, $allowAlias);
 	}
 
 	/**

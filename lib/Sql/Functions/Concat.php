@@ -48,17 +48,23 @@ class Sql_Functions_Concat extends Sql_Functions_AbstractFunction {
 	 * @static
 	 */
 	public static function parseArguments(Sql_Parser $parser, Sql_Tree_Function $function) {
-		// TODO: Enhance this, only real basic support of CONCAT() is handled here
+		if ($parser->token == self::T_IDENTIFIER) {
+			list($table, $field, $allowAlias) = $parser->parseIdentifier();
+			$function->addArgument(new Sql_Tree_SelectExpr($parser->start, $table, $field, null));
+		} else {
+			$function->addArgument($parser->parseSimpleExpr());
+		}
 
-		$name = $parser->chars;
-		$parser->accept(self::T_IDENTIFIER);
-		$function->addArgument(new Sql_Tree_Identifier($parser->start, $name));
+		do {
+			$parser->accept(self::T_COMMA);
 
-		$parser->accept(self::T_COMMA);
-
-		$name = $parser->chars;
-		$parser->accept(self::T_IDENTIFIER);
-		$function->addArgument(new Sql_Tree_Identifier($parser->start, $name));
+			if ($parser->token == self::T_IDENTIFIER) {
+				list($table, $field, $allowAlias) = $parser->parseIdentifier();
+				$function->addArgument(new Sql_Tree_SelectExpr($parser->start, $table, $field, null));
+			} else {
+				$function->addArgument($parser->parseSimpleExpr());
+			}
+		} while ($parser->token == self::T_COMMA);
 	}
 
 }
