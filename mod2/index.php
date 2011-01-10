@@ -65,6 +65,54 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$this->content .= $this->doc->header('SQL Parser');
 		$this->content .= $this->doc->spacer(5);
 
+		//$this->testSpeed();
+		$this->testQuery(
+			'SELECT tt_content.uid, tt_content.pid, tt_content.header, CONCAT(tt_content.CType, \'-\', tt_content.list_type)
+			FROM tt_content, pages'
+		);
+
+		// ShortCut
+		if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
+			$this->content .= $this->doc->spacer(20) . $this->doc->section('', $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
+		}
+
+		$this->content .= $this->doc->spacer(10);
+	}
+
+	protected function testQuery($sql) {
+		$this->content .= $this->doc->section('Query', $sql);
+
+		$scanner = new Sql_Scanner($sql);
+		/* @var Sql_Scanner $scanner */
+
+		$content .= '<div class="scanner">';
+		while ($scanner->token != self::EOF) {
+			$content .= $scanner->representation() . "<br />\n";
+			$scanner->nextToken();
+		}
+
+		$content .= '</div>';
+
+		$this->content .= $this->doc->section('Scanner', $content);
+
+		$parser = new Sql_Parser($sql);
+		/* @var Sql_Parser $parser */
+		$printer = new Sql_Printer();
+		/* @var Sql_Printer $printer */
+
+		$content = '<div class="printer">';
+		$content .= $printer->outputStatements($parser->parse())->flush();
+		$content .= '</div>';
+
+		$this->content .= $this->doc->section('Printer', $content);
+	}
+
+	/**
+	 * Tests the speed of the parser.
+	 *
+	 * @return void
+	 */
+	protected function testSpeed() {
 		$sql = 'SELECT sys_refindex.*, tx_dam_file_tracking.* FROM sys_refindex, tx_dam_file_tracking WHERE sys_refindex.tablename = \'tx_dam_file_tracking\''
 			. ' AND sys_refindex.ref_string = CONCAT(file_path, file_name)';
 
@@ -152,13 +200,6 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$content .= '</div><p>Execution time: ' . ((microtime(true) - $start) * 1000) . ' ms</p>';
 
 		$this->content .= $this->doc->section('Printer', $content);
-
-		// ShortCut
-		if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
-			$this->content .= $this->doc->spacer(20) . $this->doc->section('', $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
-		}
-
-		$this->content .= $this->doc->spacer(10);
 	}
 
 	/**
