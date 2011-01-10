@@ -305,7 +305,8 @@ class Sql_Scanner implements Sql_Interfaces_Tokens {
 			while (($this->ch >= 'a' && $this->ch <= 'z')
 					|| ($this->ch >= 'A' && $this->ch <= 'Z')
 					|| ($this->ch >= '0' && $this->ch <= '9')
-					|| $this->ch === '_') {
+					|| $this->ch === '_'
+					|| $this->ch === '$') {
 				$this->buffer .= $this->ch;
 				$this->nextCh();
 			}

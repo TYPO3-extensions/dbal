@@ -1,5 +1,6 @@
 2011-01-10  Xavier Perseguers  <typo3@perseguers.ch>
 
+	* Added support for character dollar ($) in identifiers
 	* Enhanced support of CONCAT
 	* Updated copyright information
 
