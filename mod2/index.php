@@ -80,6 +80,12 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$this->content .= $this->doc->spacer(10);
 	}
 
+	/**
+	 * Parses and outputs a SQL query.
+	 *
+	 * @param string $sql
+	 * @return void
+	 */
 	protected function testQuery($sql) {
 		$this->content .= $this->doc->section('Query', $sql);
 
