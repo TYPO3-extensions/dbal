@@ -68,7 +68,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
 		//$this->testSpeed();
 		$this->testQuery(
-			'SELECT tt_content.uid, tt_content.pid, tt_content.header, CONCAT(tt_content.CType, \'-\', tt_content.list_type)
+			'SELECT tt_content.uid, tt_content.pid, tt_content.header, EXTRACT(YEAR FROM tt_content.tstamp) AS last_modified
 			FROM tt_content, pages'
 		);
 
