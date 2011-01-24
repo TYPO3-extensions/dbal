@@ -28,6 +28,7 @@ $BE_USER->modAccess($MCONF, 1);
 
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Core.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Printer.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Drivers/MySql/Writer.php');
 
 class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
@@ -68,8 +69,9 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
 		//$this->testSpeed();
 		$this->testQuery(
-			'SELECT tt_content.uid, tt_content.pid, tt_content.header, EXTRACT(YEAR FROM tt_content.tstamp) AS last_modified
-			FROM tt_content, pages'
+			'SELECT tt_content.uid, tt_content.pid, tt_content.header
+			FROM tt_content
+			WHERE bodytext LIKE \'%hello world!%\''
 		);
 
 		// ShortCut
@@ -92,7 +94,7 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$scanner = new Sql_Scanner($sql);
 		/* @var Sql_Scanner $scanner */
 
-		$content .= '<div class="scanner">';
+		$content = '<div class="scanner">';
 		while ($scanner->token != self::EOF) {
 			$content .= $scanner->representation() . "<br />\n";
 			$scanner->nextToken();
@@ -112,6 +114,17 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$content .= '</div>';
 
 		$this->content .= $this->doc->section('Printer', $content);
+
+		$parser = new Sql_Parser($sql);
+		/* @var Sql_Parser $parser */
+		$writer = new Drivers_MySql_Writer();
+		/* @var Sql_Interfaces_Writer $writer */
+
+		$content = '<div class="writer">';
+		$content .= $writer->rewrite($parser->parse());
+		$content .= '</div>';
+
+		$this->content .= $this->doc->section('Writer', $content);
 	}
 
 	/**

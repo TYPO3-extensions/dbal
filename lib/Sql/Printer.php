@@ -73,7 +73,7 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	 * Outputs an object (tree, array of trees, string, ...).
 	 *
 	 * @param mixed $obj
-	 * @return VisitorInterface
+	 * @return Sql_Interfaces_Visitor
 	 */
 	public function output($obj) {
 		switch (TRUE) {
@@ -96,7 +96,7 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	 * Outputs an array of SQL statements.
 	 *
 	 * @param Sql_AbstractTree[] $trees
-	 * @return VisitorInterface
+	 * @return Sql_Interfaces_Visitor
 	 */
 	public function outputStatements(array $trees) {
 		foreach ($trees as $tree) {
@@ -119,7 +119,7 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	/**
 	 * Outputs a new line and indents the next one.
 	 *
-	 * @return VisitorInterface
+	 * @return Sql_Interfaces_Visitor
 	 */
 	public function outputNewLine() {
 		$this->buffer .= "<br />\n";
@@ -133,7 +133,7 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	/**
 	 * Increments the indent level.
 	 *
-	 * @return VisitorInterface
+	 * @return Sql_Interfaces_Visitor
 	 */
 	public function indent() {
 		$this->level++;
@@ -143,7 +143,7 @@ class Sql_Printer implements Sql_Interfaces_Visitor {
 	/**
 	 * Decrements the indent level.
 	 *
-	 * @return VisitorInterface
+	 * @return Sql_Interfaces_Visitor
 	 */
 	public function unindent() {
 		$this->level--;

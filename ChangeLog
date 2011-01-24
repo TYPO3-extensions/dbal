@@ -1,5 +1,6 @@
 2011-01-24  Xavier Perseguers  <typo3@perseguers.ch>
 
+	* Added basic class hierarchy for query rewriting
 	* Fixed bug #17269: Search with LIKE is case sensitive on Oracle
 
 2011-01-10  Xavier Perseguers  <typo3@perseguers.ch>
