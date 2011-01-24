@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "dbal".
 #
-# Auto generated 01-12-2010 11:49
+# Auto generated 24-01-2011 19:38
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Database Abstraction Layer',
-	'description' => 'A database abstraction layer implementation for TYPO3 4.5 based on ADOdb and offering a lot of other features.',
+	'description' => 'A database abstraction layer implementation for TYPO3 4.6 based on ADOdb and offering a lot of other features.',
 	'category' => 'be',
 	'shy' => 0,
 	'dependencies' => 'adodb',
@@ -38,7 +38,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'depends' => array(
 			'adodb' => '5.11.0-',
 			'php' => '5.2.0-0.0.0',
-			'typo3' => '4.5.0beta2-0.0.0',
+			'typo3' => '4.5.0-0.0.0',
 		),
 		'conflicts' => array(
 		),
