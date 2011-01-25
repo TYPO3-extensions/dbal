@@ -57,9 +57,16 @@ class Drivers_Oracle_Writer extends Sql_AbstractWriter {
 			case 'LIKE':
 				$this->append('dbms_lob.instr(LOWER(');
 				$this->append($tree->left);
-				$this->append('), LOWER(');
-				$this->append($tree->right);
-				$this->append('),1,1) > 0');
+				$this->append('), ');
+
+				if (is_a($tree->right, Sql_Tree_StringLiteral)) {
+					// TODO: beware with character sets
+					$this->append(strtolower($tree->right->value));
+				} else {
+					$this->append('LOWER(')->append($tree->right)->append(')');
+				}
+
+				$this->append(',1,1) > 0');
 				break;
 
 			default:
