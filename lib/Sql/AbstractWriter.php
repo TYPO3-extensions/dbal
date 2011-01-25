@@ -44,7 +44,7 @@ abstract class Sql_AbstractWriter implements Sql_Interfaces_Visitor, Sql_Interfa
 	/**
 	 * @var string
 	 */
-	private $buffer;
+	protected $buffer;
 
 	/**
 	 * Default constructor.
@@ -59,7 +59,8 @@ abstract class Sql_AbstractWriter implements Sql_Interfaces_Visitor, Sql_Interfa
 	 */
 	public function rewrite(array $trees) {
 		foreach ($trees as $tree) {
-			$this->append($tree)->append(';');
+			$this->append($tree);
+			$this->buffer .= ';';
 		}
 		return $this->buffer;
 	}
@@ -71,14 +72,16 @@ abstract class Sql_AbstractWriter implements Sql_Interfaces_Visitor, Sql_Interfa
 	 * @param mixed $obj
 	 * @return Sql_Interfaces_Visitor
 	 */
-	private function append($obj) {
+	protected function append($obj) {
 		switch (TRUE) {
 			case is_a($obj, Sql_AbstractTree):
+				/* Sql_AbstractTree $obj */
 				$obj->apply($this);
 				break;
 			case is_array($obj):
 				for ($i = 0; $i < count($obj) - 1; $i++) {
-					$this->append($obj[$i])->output(', ');
+					$this->append($obj[$i]);
+					$this->buffer .= ', ';
 				}
 				$this->append($obj[count($obj) - 1]);
 				break;
@@ -88,68 +91,88 @@ abstract class Sql_AbstractWriter implements Sql_Interfaces_Visitor, Sql_Interfa
 		return $this;
 	}
 
-	function caseTableFactor(Sql_Tree_TableFactor $tree) {
-		// TODO: Implement caseTableFactor() method.
+	/**
+	 * @param Sql_Tree_Bad $tree
+	 * @return void
+	 * @throws InvalidArgumentException
+	 */
+	public function caseBad(Sql_Tree_Bad $tree) {
+		throw new InvalidArgumentException('Invalid SQL query', 1295941914);
+	}
+
+	public function caseBooleanPrimary(Sql_Tree_BooleanPrimary $tree) {
+		// TODO: Implement caseBooleanPrimary() method.
 	}
 
 	/**
-	 * @param Sql_Tree_StringLiteral $tree
+	 * @param Sql_Tree_CaseExpr $tree
 	 * @return void
 	 */
-	function caseStringLiteral(Sql_Tree_StringLiteral $tree) {
+	public function caseCaseExpr(Sql_Tree_CaseExpr $tree) {
+		$this->append(' CASE ');
+
+		for ($i = 0; $i < count($tree->compareValues); $i++) {
+			$this->append(' WHEN ')->append($tree->compareValues[$i]);
+			$this->append(' THEN ')->append($tree->results[$i]);
+		}
+		if ($tree->else) {
+			$this->append(' ELSE ')->append($tree->else);
+		}
+
+		$this->append(' END');
+	}
+
+	/**
+	 * @param Sql_Tree_CombinedIdentifier $tree
+	 * @return void
+	 */
+	public function caseCombinedIdentifier(Sql_Tree_CombinedIdentifier $tree) {
+		$this->append($tree->left)->append('.')->append($tree->right);
+	}
+
+	public function caseFunction(Sql_Tree_Function $tree) {
+		// TODO: Implement caseFunction() method.
+	}
+
+	/**
+	 * @param Sql_Tree_IntLiteral $tree
+	 * @return void
+	 */
+	public function caseIntLiteral(Sql_Tree_IntLiteral $tree) {
 		$this->append($tree->value);
+	}
+
+	/**
+	 * @param Sql_Tree_Select $tree
+	 * @return void
+	 */
+	public function caseSelect(Sql_Tree_Select $tree) {
+		$this->append('SELECT ')->append($tree->selectExpr);
+		$this->append(' FROM ')->append($tree->tableReferences);
+
+		if ($tree->whereCondition) {
+			$this->append(' WHERE ')->append($tree->whereCondition);
+		}
+	}
+
+	public function caseSimpleExpr(Sql_Tree_SimpleExpr $tree) {
+		// TODO: Implement caseSimpleExpr() method.
 	}
 
 	/**
 	 * @param Sql_Tree_Star $tree
 	 * @return void
 	 */
-	function caseStar(Sql_Tree_Star $tree) {
+	public function caseStar(Sql_Tree_Star $tree) {
 		$this->append('*');
 	}
 
-	function caseSimpleExpr(Sql_Tree_SimpleExpr $tree) {
-		// TODO: Implement caseSimpleExpr() method.
-	}
-
-	function caseSelectExpr(Sql_Tree_SelectExpr $tree) {
-		// TODO: Implement caseSelectExpr() method.
-	}
-
-	function caseSelect(Sql_Tree_Select $tree) {
-		// TODO: Implement caseSelect() method.
-	}
-
-	function caseOperation(Sql_Tree_Operation $tree) {
-		// TODO: Implement caseOperation() method.
-	}
-
-	function caseIntLiteral(Sql_Tree_IntLiteral $tree) {
+	/**
+	 * @param Sql_Tree_StringLiteral $tree
+	 * @return void
+	 */
+	public function caseStringLiteral(Sql_Tree_StringLiteral $tree) {
 		$this->append($tree->value);
-	}
-
-	function caseIdentifier(Sql_Tree_Identifier $tree) {
-		$this->append($tree->name);
-	}
-
-	function caseFunction(Sql_Tree_Function $tree) {
-		// TODO: Implement caseFunction() method.
-	}
-
-	function caseCombinedIdentifier(Sql_Tree_CombinedIdentifier $tree) {
-		// TODO: Implement caseCombinedIdentifier() method.
-	}
-
-	function caseCaseExpr(Sql_Tree_CaseExpr $tree) {
-		// TODO: Implement caseCaseExpr() method.
-	}
-
-	function caseBooleanPrimary(Sql_Tree_BooleanPrimary $tree) {
-		// TODO: Implement caseBooleanPrimary() method.
-	}
-
-	function caseBad(Sql_Tree_Bad $tree) {
-		// TODO: Implement caseBad() method.
 	}
 
 }

@@ -1,3 +1,7 @@
+2011-01-25  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Implemented basic MySQL and Oracle query rewriting
+
 2011-01-24  Xavier Perseguers  <typo3@perseguers.ch>
 
 	* Added basic class hierarchy for query rewriting

@@ -29,6 +29,7 @@ $BE_USER->modAccess($MCONF, 1);
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Core.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Sql/Printer.php');
 require_once(t3lib_extMgm::extPath('dbal') . 'lib/Drivers/MySql/Writer.php');
+require_once(t3lib_extMgm::extPath('dbal') . 'lib/Drivers/Oracle/Writer.php');
 
 class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 
@@ -124,7 +125,18 @@ class tx_dbal_module2 extends t3lib_SCbase implements Sql_Interfaces_Tokens {
 		$content .= $writer->rewrite($parser->parse());
 		$content .= '</div>';
 
-		$this->content .= $this->doc->section('Writer', $content);
+		$this->content .= $this->doc->section('Writer MySQL', $content);
+
+		$parser = new Sql_Parser($sql);
+		/* @var Sql_Parser $parser */
+		$writer = new Drivers_Oracle_Writer();
+		/* @var Sql_Interfaces_Writer $writer */
+
+		$content = '<div class="writer">';
+		$content .= $writer->rewrite($parser->parse());
+		$content .= '</div>';
+
+		$this->content .= $this->doc->section('Writer Oracle', $content);
 	}
 
 	/**

@@ -40,6 +40,49 @@ require_once(dirname(__FILE__) . '/../../Sql/AbstractWriter.php');
  */
 class Drivers_MySql_Writer extends Sql_AbstractWriter {
 
+	/**
+	 * @param Sql_Tree_Identifier $tree
+	 * @return void
+	 */
+	public function caseIdentifier(Sql_Tree_Identifier $tree) {
+		$this->append($tree->name);
+	}
+
+	/**
+	 * @param Sql_Tree_Operation $tree
+	 * @return void
+	 */
+	public function caseOperation(Sql_Tree_Operation $tree) {
+		$this->append($tree->left);
+		$this->append(' ' . $tree->operator . ' ');
+		$this->append($tree->right);
+	}
+
+	/**
+	 * @param Sql_Tree_SelectExpr $tree
+	 * @return void
+	 */
+	public function caseSelectExpr(Sql_Tree_SelectExpr $tree) {
+		if ($tree->table) {
+			$this->append($tree->table)->append('.');
+		}
+		$this->append($tree->field);
+		if ($tree->alias) {
+			$this->append(' AS ')->append($tree->alias);
+		}
+	}
+
+	/**
+	 * @param Sql_Tree_TableFactor $tree
+	 * @return void
+	 */
+	public function caseTableFactor(Sql_Tree_TableFactor $tree) {
+		$this->append($tree->tableName);
+		if ($tree->alias) {
+			$this->append(' AS ')->append($tree->alias);
+		}
+	}
+
 }
 
 ?>
